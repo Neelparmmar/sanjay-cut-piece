@@ -238,14 +238,18 @@ const t = getTranslations(lang);
     border-radius: 100px;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 767px) {
     .hero {
       min-height: auto;
-      padding: var(--space-3xl) 0;
+      padding: var(--space-xl) 0 var(--space-2xl);
     }
 
     .hero__content {
-      padding: var(--space-2xl) var(--space-md);
+      padding: var(--space-md) var(--space-md) var(--space-xl);
+    }
+
+    .hero__badge {
+      margin-bottom: var(--space-xs);
     }
 
     .hero__actions {
