@@ -29,25 +29,19 @@ const t = getTranslations(lang);
     <div class="visit__grid">
       <!-- Map / Image -->
       <div class="visit__map reveal reveal--left">
-        <a href={business.mapsLink} target="_blank" rel="noopener noreferrer" class="visit__map-link" aria-label="Open location in Google Maps">
-          <div class="visit__map-placeholder">
-            <div class="visit__map-pin">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--burgundy-700)" stroke="none">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3" fill="white"/>
-              </svg>
-            </div>
-            <p class="visit__map-text">
-              <strong>{business.name}</strong><br/>
-              {business.address.line1}<br/>
-              {business.address.line2}<br/>
-              {business.address.area}, {business.address.city}
-            </p>
-            <span class="btn btn--gold btn--sm" style="margin-top: var(--space-md);">
-              {t.ctas.openInMaps}
-            </span>
-          </div>
-        </a>
+        <div class="visit__map-wrapper">
+          <iframe
+            src={business.mapEmbedUrl}
+            width="100%"
+            height="100%"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Sanjay Cut Piece Location Map"
+            class="visit__iframe"
+          ></iframe>
+        </div>
       </div>
 
       <!-- Store Info -->
@@ -139,40 +133,33 @@ const t = getTranslations(lang);
     }
   }
 
-  /* Map placeholder */
-  .visit__map-link {
-    display: block;
-    text-decoration: none;
+  /* Map wrapper */
+  .visit__map {
+    height: 100%;
   }
 
-  .visit__map-placeholder {
-    background: linear-gradient(135deg, var(--cream-200), var(--cream-300));
+  .visit__map-wrapper {
+    background: var(--cream-200);
     border: 2px solid var(--cream-400);
     border-radius: var(--radius-xl);
-    padding: var(--space-3xl);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 350px;
-    justify-content: center;
+    overflow: hidden;
+    height: 100%;
+    min-height: 380px;
+    box-shadow: var(--shadow-sm);
     transition: all var(--transition-base);
   }
 
-  .visit__map-placeholder:hover {
+  .visit__map-wrapper:hover {
     border-color: var(--gold-500);
     box-shadow: var(--shadow-gold);
   }
 
-  .visit__map-pin {
-    margin-bottom: var(--space-lg);
-  }
-
-  .visit__map-text {
-    font-family: var(--font-body);
-    font-size: 0.9375rem;
-    color: var(--brown-700);
-    line-height: 1.7;
+  .visit__iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 380px;
+    border: none;
+    display: block;
   }
 
   /* Info card */

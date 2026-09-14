@@ -28,6 +28,7 @@
     "daysOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
   },
   "mapsLink": "https://maps.app.goo.gl/XTzatKnhju5wWqSg6",
+  "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3768.1965582312683!2d72.974958!3d19.1934544!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b92722767ca1%3A0x473cf0674d086ac2!2sSanjay%20Cutpiece%20And%20Matching%20Centre!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin",
   "directionsLink": "https://www.google.com/maps/dir/?api=1&destination=Sanjay+Matching+Centre+Thane+West",
   "collections": [
     {
