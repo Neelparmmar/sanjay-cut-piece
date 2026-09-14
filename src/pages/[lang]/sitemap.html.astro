@@ -35,71 +35,48 @@ const pageSeo = getLocalizedSeo(urlPath, lang);
 
   <main class="sitemap-page">
     <div class="container section">
-      <nav class="breadcrumbs-container" aria-label="Breadcrumb" style="margin-bottom: 1.5rem;">
-        <ol class="breadcrumbs-list">
-          <li class="breadcrumb-item"><a href={getLocalizedPath('/', lang)} class="breadcrumb-link">{t.collectionDetail.breadcrumbHome}</a></li>
-          <li class="breadcrumb-item"><span class="breadcrumb-separator">/</span><span class="breadcrumb-current">{t.nav.sitemap}</span></li>
-        </ol>
+      <!-- Breadcrumb -->
+      <nav class="sitemap-breadcrumb" aria-label="Breadcrumb">
+        <a href={getLocalizedPath('/', lang)}>{t.collectionDetail.breadcrumbHome}</a>
+        <span class="sitemap-breadcrumb__sep">»</span>
+        <span>{t.nav.sitemap}</span>
       </nav>
 
-      <header class="sitemap-header">
-        <h1 class="sitemap-title">{t.sitemapPage.title}</h1>
-        <p class="sitemap-subtitle">
-          {t.sitemapPage.subtitle}
-        </p>
-        <div class="gold-divider" style="margin: 1.5rem 0;">
-          <div class="gold-divider__line"></div>
-          <span class="gold-divider__ornament">❖</span>
-          <div class="gold-divider__line"></div>
-        </div>
-      </header>
+      <!-- Title -->
+      <h1 class="sitemap-title">{t.sitemapPage.title}</h1>
 
-      <div class="sitemap-content">
-        <!-- Main Pages Section -->
-        <section class="sitemap-block">
-          <h2 class="sitemap-heading">{t.sitemapPage.mainPagesHeading}</h2>
-          <ul class="sitemap-list">
-            <li>
-              <a href={getLocalizedPath('/', lang)} class="sitemap-link">{t.sitemapPage.homeTitle}</a>
-              <span class="sitemap-desc">{t.sitemapPage.homeDesc}</span>
-            </li>
-            <li>
-              <a href={getLocalizedPath('/sitemap.html', lang)} class="sitemap-link">{t.sitemapPage.sitemapTitle}</a>
-              <span class="sitemap-desc">{t.sitemapPage.sitemapDesc}</span>
-            </li>
-          </ul>
-        </section>
+      <!-- Simple Sitemap List -->
+      <div class="sitemap-list-wrap">
+        <ul class="sitemap-list">
+          <!-- Main Pages -->
+          <li>
+            <a href={getLocalizedPath('/', lang)}>{t.sitemapPage.homeTitle}</a>
+          </li>
+          <li>
+            <a href={getLocalizedPath('/sitemap.html', lang)}>{t.sitemapPage.sitemapTitle}</a>
+          </li>
 
-        <!-- Fabric & Dress Material Collections Section -->
-        <section class="sitemap-block">
-          <h2 class="sitemap-heading">{t.sitemapPage.productsHeading}</h2>
-          <ul class="sitemap-list">
-            {business.collections.map((item) => {
-              const url = getLocalizedPath(`/${item.id}`, lang);
-              const loc = t.collections[item.id];
-              const seo = getLocalizedSeo(`/${item.id}`, lang);
-              return (
-                <li>
-                  <a href={url} class="sitemap-link">
-                    {loc?.name || item.name} — {seo?.primaryKeyword || loc?.name || item.name} in Thane
-                  </a>
-                  <span class="sitemap-desc">{loc?.description || item.description}</span>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+          <!-- Products & Fabric Collections -->
+          <li>
+            <span class="sitemap-category">{t.sitemapPage.productsHeading}</span>
+            <ul class="sitemap-sublist">
+              {business.collections.map((item) => {
+                const url = getLocalizedPath(`/${item.id}`, lang);
+                const loc = t.collections[item.id];
+                return (
+                  <li>
+                    <a href={url}>{loc?.name || item.name}</a>
+                  </li>
+                );
+              })}
+            </ul>
+          </li>
 
-        <!-- Search Engine Protocol Section -->
-        <section class="sitemap-block sitemap-block--xml">
-          <h2 class="sitemap-heading">{t.sitemapPage.xmlHeading}</h2>
-          <p class="text-body" style="margin-bottom: 0.75rem; color: var(--brown-700);">
-            {t.sitemapPage.xmlDesc}
-          </p>
-          <a href="/sitemap.xml" target="_blank" class="xml-sitemap-badge">
-            📄 XML Sitemap: <span>{domain}/sitemap.xml</span>
-          </a>
-        </section>
+          <!-- XML Sitemap -->
+          <li>
+            <a href="/sitemap.xml" target="_blank">XML Sitemap</a>
+          </li>
+        </ul>
       </div>
     </div>
   </main>
@@ -111,134 +88,96 @@ const pageSeo = getLocalizedSeo(urlPath, lang);
 <style>
   .sitemap-page {
     padding-top: 80px;
-    background-color: var(--cream-100);
+    background-color: var(--white, #fff);
     min-height: 80vh;
   }
 
-  .sitemap-header {
-    margin-bottom: 2.5rem;
+  /* Breadcrumb */
+  .sitemap-breadcrumb {
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    color: var(--brown-600, #6b5b4f);
   }
 
+  .sitemap-breadcrumb a {
+    color: var(--burgundy-800, #5a1a2a);
+    text-decoration: none;
+  }
+
+  .sitemap-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .sitemap-breadcrumb__sep {
+    margin: 0 0.4rem;
+    color: var(--brown-400, #a09080);
+  }
+
+  /* Title */
   .sitemap-title {
-    font-family: var(--font-display);
-    font-size: 2.25rem;
-    color: var(--burgundy-900);
-    margin-bottom: 0.5rem;
+    font-family: var(--font-display, serif);
+    font-size: 2rem;
+    color: var(--burgundy-900, #3d0c1c);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--cream-300, #e8ddd0);
   }
 
-  .sitemap-subtitle {
-    font-size: 1.0625rem;
-    color: var(--brown-700);
+  /* List wrapper */
+  .sitemap-list-wrap {
     max-width: 700px;
-    line-height: 1.6;
   }
 
-  .sitemap-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-  }
-
-  .sitemap-block {
-    background: var(--white);
-    padding: 2rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    border-left: 5px solid var(--burgundy-800);
-  }
-
-  .sitemap-block--xml {
-    border-left-color: var(--gold-500);
-    background: linear-gradient(to right, var(--white), var(--cream-200));
-  }
-
-  .sitemap-heading {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    color: var(--burgundy-900);
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--cream-300);
-  }
-
+  /* Main list */
   .sitemap-list {
-    list-style: none;
-    padding: 0;
+    list-style: disc;
+    padding-left: 1.5rem;
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
   }
 
-  .sitemap-list li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  .sitemap-list > li {
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
   }
 
-  .sitemap-link {
-    font-family: var(--font-display);
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: var(--burgundy-900);
+  .sitemap-list a {
+    color: var(--burgundy-800, #5a1a2a);
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
-  .sitemap-link:hover {
-    color: var(--gold-600);
+  .sitemap-list a:hover {
+    color: var(--gold-600, #b8860b);
     text-decoration: underline;
   }
 
-  .sitemap-desc {
-    font-size: 0.875rem;
-    color: var(--brown-600);
-    line-height: 1.5;
-  }
-
-  .xml-sitemap-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--burgundy-900);
-    color: var(--gold-300);
-    padding: 0.75rem 1.25rem;
-    border-radius: var(--radius-md);
-    text-decoration: none;
+  /* Category label (non-link parent items) */
+  .sitemap-category {
     font-weight: 600;
-    font-size: 0.9375rem;
-    transition: background 0.2s ease;
+    color: var(--burgundy-900, #3d0c1c);
   }
 
-  .xml-sitemap-badge:hover {
-    background: #2A0810;
+  /* Nested sub-list */
+  .sitemap-sublist {
+    list-style: circle;
+    padding-left: 1.5rem;
+    margin: 0.3rem 0 0.5rem;
   }
 
-  .breadcrumbs-list {
-    display: flex;
-    align-items: center;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 0.875rem;
+  .sitemap-sublist > li {
+    margin-bottom: 0.35rem;
+    font-size: 1rem;
+    line-height: 1.6;
   }
 
-  .breadcrumb-item {
-    display: flex;
-    align-items: center;
-  }
-
-  .breadcrumb-separator {
-    margin: 0 0.5rem;
-    color: var(--brown-400);
-  }
-
-  .breadcrumb-link {
-    color: var(--burgundy-800);
+  .sitemap-sublist a {
+    color: var(--burgundy-800, #5a1a2a);
     text-decoration: none;
   }
 
-  .breadcrumb-current {
-    color: var(--brown-600);
+  .sitemap-sublist a:hover {
+    color: var(--gold-600, #b8860b);
+    text-decoration: underline;
   }
 </style>
