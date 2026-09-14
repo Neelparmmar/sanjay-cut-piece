@@ -129,28 +129,7 @@ const relatedCollections = business.collections
               ))}
             </div>
 
-            <!-- Keyword Content Box -->
-            <div class="keyword-box">
-              <h3 class="keyword-box__title">{t.collectionDetail.keywordBoxTitle} {pageSeo.primaryKeyword}?</h3>
-              <p>
-                {t.collectionDetail.keywordBoxTextPrefix} {pageSeo.secondaryKeywords.map((kw, i) => (
-                  <span><strong>{kw}</strong>{i < pageSeo.secondaryKeywords.length - 1 ? ', ' : ''}</span>
-                ))} {t.collectionDetail.keywordBoxTextSuffix}
-              </p>
-              <div class="landing-cta-group">
-                <a
-                  href={`${business.whatsappLink}?text=Hi, I am looking for ${locCollection.name} at Sanjay Cut Piece, Thane.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="btn btn--gold"
-                >
-                  💬 {t.ctas.inquireWhatsapp}
-                </a>
-                <a href={business.phoneLink} class="btn btn--primary">
-                  📞 {t.ctas.callStore}: {business.phoneFormatted}
-                </a>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>

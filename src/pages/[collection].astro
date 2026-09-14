@@ -122,28 +122,7 @@ const relatedCollections = business.collections
               ))}
             </div>
 
-            <!-- Keyword Content Box -->
-            <div class="keyword-box">
-              <h3 class="keyword-box__title">{t.collectionDetail.keywordBoxTitle} {pageSeo.primaryKeyword}?</h3>
-              <p>
-                {t.collectionDetail.keywordBoxTextPrefix} {pageSeo.secondaryKeywords.map((kw, i) => (
-                  <span><strong>{kw}</strong>{i < pageSeo.secondaryKeywords.length - 1 ? ', ' : ''}</span>
-                ))} {t.collectionDetail.keywordBoxTextSuffix}
-              </p>
-              <div class="landing-cta-group">
-                <a
-                  href={`${business.whatsappLink}?text=Hi, I am looking for ${locCollection.name} at Sanjay Cut Piece, Thane.`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="btn btn--gold"
-                >
-                  💬 {t.ctas.inquireWhatsapp}
-                </a>
-                <a href={business.phoneLink} class="btn btn--primary">
-                  📞 {t.ctas.callStore}: {business.phoneFormatted}
-                </a>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -401,26 +380,44 @@ const relatedCollections = business.collections
     margin: 0;
   }
 
-  .keyword-box {
-    background: var(--white);
-    border: 1px solid var(--gold-300);
+  .store-cta {
+    background: linear-gradient(135deg, var(--burgundy-900) 0%, #2A0810 100%);
     border-radius: var(--radius-lg);
-    padding: 1.5rem;
+    padding: 2rem;
     margin-top: 2rem;
-    box-shadow: var(--shadow-sm);
+    text-align: center;
   }
 
-  .keyword-box__title {
+  .store-cta__badge {
+    display: inline-block;
+    background: rgba(212, 163, 89, 0.2);
+    color: var(--gold-400);
+    border: 1px solid var(--gold-600);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .store-cta__title {
     font-family: var(--font-display);
     font-size: 1.25rem;
-    color: var(--burgundy-900);
+    color: var(--gold-300);
     margin-bottom: 0.5rem;
   }
 
-  .keyword-box p {
+  .store-cta__address {
     font-size: 0.9375rem;
-    color: var(--brown-700);
-    line-height: 1.6;
+    color: var(--cream-200);
+    margin-bottom: 0.25rem;
+  }
+
+  .store-cta__hours {
+    font-size: 0.875rem;
+    color: var(--cream-300);
     margin-bottom: 1.25rem;
   }
 
