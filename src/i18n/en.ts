@@ -192,7 +192,7 @@ export const en: Translations = {
     'dress-materials': {
       id: 'dress-materials',
       name: 'Dress Materials',
-      description: 'Exquisite unstitched dress materials in cotton, silk, linen, georgette, chanderi and more.',
+      description: 'Exquisite dress materials in cotton, silk, linen, georgette, chanderi and more.',
       alt: 'Dress material collection at Sanjay Cut Piece, Thane',
     },
     'blouse-materials': {

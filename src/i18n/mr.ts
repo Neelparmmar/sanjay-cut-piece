@@ -192,7 +192,7 @@ export const mr: Translations = {
     'dress-materials': {
       id: 'dress-materials',
       name: 'ड्रेस मटिरियल्स',
-      description: 'कॉटन, सिल्क, लिनन, जॉर्जेट, चंदेरी आणि इतर उत्तम अणशिवलेले ड्रेस मटिरियल्स.',
+      description: 'कॉटन, सिल्क, लिनन, जॉर्जेट, चंदेरी आणि इतर उत्तम ड्रेस मटिरियल्स.',
       alt: 'संजय कट पीस ठाणे येथे ड्रेस मटिरिअल कलेक्शन',
     },
     'blouse-materials': {
