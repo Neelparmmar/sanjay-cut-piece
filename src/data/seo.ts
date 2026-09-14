@@ -24,7 +24,7 @@ export const seoConfig: Record<string, PageSEO> = {
     secondaryKeywords: ['dress material store Thane', 'matching centre Thane West', 'cut piece cloth shop Thane'],
     longTailKeywords: ['best cut piece fabric shop in Thane Jambli Naka', 'cloth store near station Thane West'],
     searchIntent: 'Commercial / Local',
-    h1: 'Sanjay Cut Piece & Cut Piece Centre — Quality Fabrics in Thane Since 1977',
+    h1: 'Sanjay Cut Piece & Matching Centre — Quality Fabrics in Thane Since 1977',
     priority: 1.0,
     changefreq: 'weekly',
     schemaType: 'ClothingStore',

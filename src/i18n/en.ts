@@ -178,9 +178,9 @@ export const en: Translations = {
   },
   sitemapPage: {
     title: 'Website Sitemap',
-    subtitle: 'Explore all public landing pages, fabric categories, and store information for Sanjay Cut Piece & Cut Piece Centre in Thane West.',
+    subtitle: 'Explore all public landing pages, fabric categories, and store information for Sanjay Cut Piece & Matching Centre in Thane West.',
     mainPagesHeading: 'Main Pages',
-    homeTitle: 'Homepage — Sanjay Cut Piece & Cut Piece Centre (Thane West)',
+    homeTitle: 'Homepage — Sanjay Cut Piece & Matching Centre (Thane West)',
     homeDesc: 'Local fabric store overview, business hours, heritage since 1977, store location near Jambli Naka.',
     sitemapTitle: 'HTML Sitemap — Page Directory',
     sitemapDesc: 'Comprehensive list of all indexable landing pages and collection guides.',
