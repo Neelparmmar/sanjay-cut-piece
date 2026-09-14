@@ -1,0 +1,760 @@
+---
+import business from '../data/business.json';
+---
+
+<!-- Chatbot Toggle Button -->
+<button class="chatbot-toggle" id="chatbot-toggle" aria-label="Open chat assistant">
+  <img
+    src="/images/chatbot-icon.jpg"
+    alt="Sanjay Cut Piece Chat"
+    class="chatbot-toggle__logo"
+    id="chatbot-toggle-logo"
+  />
+  <svg class="chatbot-toggle__close" id="chatbot-toggle-close" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+  <!-- Notification dot -->
+  <span class="chatbot-toggle__badge" id="chatbot-badge"></span>
+</button>
+
+<!-- Chatbot Window -->
+<div class="chatbot" id="chatbot-window" aria-hidden="true">
+  <!-- Header -->
+  <div class="chatbot__header">
+    <div class="chatbot__header-info">
+      <img src="/images/SC_logo_round_HD_tight.png" alt="Sanjay Cut Piece" class="chatbot__avatar" />
+      <div>
+        <div class="chatbot__header-name">Sanjay Cut Piece</div>
+        <div class="chatbot__header-status">
+          <span class="chatbot__status-dot"></span>
+          Online — We typically reply instantly
+        </div>
+      </div>
+    </div>
+    <button class="chatbot__close-btn" id="chatbot-close" aria-label="Close chat">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="chatbot__messages" id="chatbot-messages">
+    <!-- Messages will be injected here -->
+  </div>
+
+  <!-- Quick Replies -->
+  <div class="chatbot__quick-replies" id="chatbot-quick-replies">
+    <!-- Quick reply buttons injected here -->
+  </div>
+
+  <!-- Input -->
+  <div class="chatbot__input-area">
+    <input
+      type="text"
+      class="chatbot__input"
+      id="chatbot-input"
+      placeholder="Type your message..."
+      autocomplete="off"
+    />
+    <button class="chatbot__send" id="chatbot-send" aria-label="Send message">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  /* ---- CHATBOT TOGGLE BUTTON ---- */
+  .chatbot-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10000;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid var(--gold-500);
+    background: var(--burgundy-900);
+    box-shadow: 0 6px 28px rgba(74, 14, 28, 0.45), 0 0 0 0 rgba(197, 165, 90, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s cubic-bezier(.4,2,.6,1), box-shadow 0.3s ease;
+    animation: chatbot-pulse 3s ease-in-out infinite;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .chatbot-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 32px rgba(74, 14, 28, 0.5), 0 0 0 6px rgba(197, 165, 90, 0.15);
+  }
+
+  .chatbot-toggle__logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: opacity 0.25s ease, transform 0.3s ease;
+  }
+
+  .chatbot-toggle__close {
+    color: var(--white);
+    transition: opacity 0.25s ease, transform 0.3s ease;
+    position: absolute;
+  }
+
+  .chatbot-toggle__badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 14px;
+    height: 14px;
+    background: #25D366;
+    border-radius: 50%;
+    border: 2px solid var(--burgundy-900);
+    animation: badge-pulse 2s ease-in-out infinite;
+  }
+
+  .chatbot-toggle__badge.hidden {
+    display: none;
+  }
+
+  @keyframes chatbot-pulse {
+    0%, 100% { box-shadow: 0 6px 28px rgba(74, 14, 28, 0.45), 0 0 0 0 rgba(197, 165, 90, 0.4); }
+    50% { box-shadow: 0 6px 28px rgba(74, 14, 28, 0.45), 0 0 0 8px rgba(197, 165, 90, 0); }
+  }
+
+  @keyframes badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+  }
+
+  /* ---- CHATBOT WINDOW ---- */
+  .chatbot {
+    position: fixed;
+    bottom: 100px;
+    right: 24px;
+    z-index: 9999;
+    width: 380px;
+    max-height: 540px;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(44, 24, 16, 0.25), 0 0 0 1px rgba(44, 24, 16, 0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.95);
+    transform-origin: bottom right;
+    transition: opacity 0.35s cubic-bezier(.4,0,.2,1),
+                transform 0.35s cubic-bezier(.4,0,.2,1),
+                visibility 0.35s;
+  }
+
+  .chatbot.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  /* ---- HEADER ---- */
+  .chatbot__header {
+    background: linear-gradient(135deg, var(--burgundy-900), var(--burgundy-700));
+    color: var(--white);
+    padding: 16px 16px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .chatbot__header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .chatbot__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid var(--gold-500);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .chatbot__header-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .chatbot__header-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    opacity: 0.85;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+
+  .chatbot__status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #25D366;
+    flex-shrink: 0;
+    animation: status-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes status-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+    50% { box-shadow: 0 0 0 4px rgba(37, 211, 102, 0); }
+  }
+
+  .chatbot__close-btn {
+    background: rgba(255,255,255,0.12);
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--white);
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .chatbot__close-btn:hover {
+    background: rgba(255,255,255,0.22);
+  }
+
+  /* ---- MESSAGES ---- */
+  .chatbot__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: linear-gradient(180deg, #faf7f2 0%, var(--white) 100%);
+    min-height: 200px;
+    max-height: 300px;
+  }
+
+  .chatbot__messages::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .chatbot__messages::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chatbot__messages::-webkit-scrollbar-thumb {
+    background: var(--cream-400);
+    border-radius: 4px;
+  }
+
+  /* Message Bubbles */
+  :global(.chatbot-msg) {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    font-family: 'Inter', sans-serif;
+    animation: msg-in 0.35s cubic-bezier(.4,0,.2,1);
+    word-break: break-word;
+  }
+
+  @keyframes msg-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  :global(.chatbot-msg--bot) {
+    align-self: flex-start;
+    background: var(--cream-200);
+    color: var(--brown-900);
+    border-bottom-left-radius: 4px;
+  }
+
+  :global(.chatbot-msg--user) {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--burgundy-800), var(--burgundy-700));
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+  }
+
+  :global(.chatbot-msg--bot a) {
+    color: var(--burgundy-700);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--gold-500);
+    text-underline-offset: 2px;
+  }
+
+  :global(.chatbot-msg--bot a:hover) {
+    color: var(--burgundy-900);
+  }
+
+  /* Typing indicator */
+  :global(.chatbot-typing) {
+    display: flex;
+    gap: 4px;
+    padding: 12px 16px;
+    align-self: flex-start;
+    background: var(--cream-200);
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+  }
+
+  :global(.chatbot-typing span) {
+    width: 7px;
+    height: 7px;
+    background: var(--brown-500);
+    border-radius: 50%;
+    animation: typing-bounce 1.4s ease-in-out infinite;
+  }
+
+  :global(.chatbot-typing span:nth-child(2)) { animation-delay: 0.2s; }
+  :global(.chatbot-typing span:nth-child(3)) { animation-delay: 0.4s; }
+
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* ---- QUICK REPLIES ---- */
+  .chatbot__quick-replies {
+    padding: 6px 16px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    background: var(--white);
+    border-top: 1px solid var(--cream-300);
+    flex-shrink: 0;
+  }
+
+  .chatbot__quick-replies:empty {
+    display: none;
+    padding: 0;
+    border: none;
+  }
+
+  :global(.chatbot-qr) {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--burgundy-700);
+    background: transparent;
+    color: var(--burgundy-700);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  :global(.chatbot-qr:hover) {
+    background: var(--burgundy-700);
+    color: var(--white);
+    transform: translateY(-1px);
+  }
+
+  /* ---- INPUT AREA ---- */
+  .chatbot__input-area {
+    padding: 12px 12px 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: var(--white);
+    border-top: 1px solid var(--cream-300);
+    flex-shrink: 0;
+  }
+
+  .chatbot__input {
+    flex: 1;
+    border: 1.5px solid var(--cream-400);
+    border-radius: 24px;
+    padding: 10px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--brown-900);
+    background: var(--cream-100);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .chatbot__input:focus {
+    border-color: var(--burgundy-600);
+    box-shadow: 0 0 0 3px rgba(107, 26, 46, 0.08);
+  }
+
+  .chatbot__input::placeholder {
+    color: var(--brown-500);
+    opacity: 0.7;
+  }
+
+  .chatbot__send {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--burgundy-800), var(--burgundy-700));
+    color: var(--white);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex-shrink: 0;
+  }
+
+  .chatbot__send:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(74, 14, 28, 0.3);
+  }
+
+  .chatbot__send:active {
+    transform: scale(0.95);
+  }
+
+  /* ---- MOBILE RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .chatbot-toggle {
+      bottom: 76px; /* above mobile action bar */
+      right: 16px;
+      width: 56px;
+      height: 56px;
+    }
+
+    .chatbot-toggle__logo {
+      width: 38px;
+      height: 38px;
+    }
+
+    .chatbot {
+      bottom: 0;
+      right: 0;
+      left: 0;
+      width: 100%;
+      max-height: 85vh;
+      border-radius: 20px 20px 0 0;
+      transform-origin: bottom center;
+    }
+
+    .chatbot__messages {
+      max-height: 50vh;
+    }
+  }
+</style>
+
+<script define:vars={{ business }}>
+  // ============================================
+  // SANJAY CUT PIECE — CHATBOT ENGINE
+  // Rule-based FAQ chatbot with WhatsApp handoff
+  // ============================================
+
+  const WHATSAPP_LINK = business.whatsappLink;
+  const PHONE = business.phoneFormatted;
+  const PHONE_LINK = business.phoneLink;
+  const HOURS = business.hours;
+  const ADDRESS = business.address;
+  const MAPS_LINK = business.mapsLink;
+  const COLLECTIONS = business.collections;
+
+  // ---- FAQ Knowledge Base ----
+  const FAQ_RULES = [
+    {
+      keywords: ['hello', 'hi', 'hey', 'namaste', 'hii', 'helo', 'good morning', 'good afternoon', 'good evening'],
+      response: `Namaste! 🙏 Welcome to <strong>Sanjay Cut Piece</strong>. How can I help you today?`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['hour', 'timing', 'time', 'open', 'close', 'when', 'schedule', 'kab', 'kitne baje'],
+      response: `🕐 We are open <strong>${HOURS.days}</strong> from <strong>${HOURS.display}</strong>. Come visit us anytime during these hours!`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['where', 'location', 'address', 'kahan', 'direction', 'map', 'find', 'reach', 'store'],
+      response: `📍 Our store is at:<br><strong>${ADDRESS.line1}</strong><br>${ADDRESS.line2}<br>${ADDRESS.area}, ${ADDRESS.city} — ${ADDRESS.pincode}<br><br><a href="${MAPS_LINK}" target="_blank" rel="noopener">📌 Open in Google Maps →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['phone', 'call', 'contact', 'number', 'mobile', 'ring'],
+      response: `📞 You can call us at <a href="${PHONE_LINK}"><strong>${PHONE}</strong></a>. Or message us on <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> for quick replies!`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['whatsapp', 'message', 'chat', 'msg', 'wa'],
+      response: `💬 You can message us directly on WhatsApp for quick assistance!<br><br><a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">📱 Chat on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['collection', 'product', 'sell', 'available', 'what do you', 'range', 'category', 'item'],
+      response: `🛍️ We have a wide range of collections:<br><br>${COLLECTIONS.map(c => `• <strong>${c.name}</strong> — ${c.description.split('.')[0]}`).join('<br>')}<br><br>Would you like to know more about any specific collection?`,
+      followUp: 'collections'
+    },
+    {
+      keywords: ['dress material', 'unstitched', 'suit'],
+      response: `👗 Our <strong>Dress Materials</strong> collection includes exquisite unstitched fabrics in cotton, silk, linen, georgette, chanderi and more. Perfect for custom tailoring!<br><br>Want to inquire about specific fabrics? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Dress Materials" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['blouse material', 'blouse fabric'],
+      response: `👚 We offer premium <strong>Blouse Materials</strong> in silk, brocade, raw silk, cotton, fancy prints and more.<br><br>Want to check availability? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Blouse Materials" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['ready made blouse', 'readymade', 'stitched blouse'],
+      response: `✨ Our <strong>Ready Made Blouses</strong> come in various styles for traditional, party wear and everyday occasions.<br><br>Want to see options? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Ready Made Blouses" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['fabric', 'kapda', 'cloth'],
+      response: `🧵 We carry a wide selection of quality <strong>Fabrics</strong> for all your creative needs and custom tailoring.<br><br>Looking for something specific? <a href="${WHATSAPP_LINK}?text=Hi, I'm looking for specific fabrics" target="_blank" rel="noopener">Tell us on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['legging', 'leggings'],
+      response: `🩳 We have comfortable, stylish <strong>Leggings</strong> in a variety of colours for everyday wear.<br><br>Interested? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Leggings" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['petticoat', 'saree petticoat'],
+      response: `Quality <strong>Saree Petticoats</strong> available in cotton, silk, satin — both elastic and stitched options.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Saree Petticoats" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['shapewear', 'body shaper'],
+      response: `Our <strong>Saree Shapewear</strong> offers a smooth, comfortable fit for all-day ease with your saree.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Saree Shapewear" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['dupatta', 'chunni'],
+      response: `🧣 Elegant <strong>Dupattas</strong> available in Banarasi, Kalamkari, chiffon, georgette, net, organza and more.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Dupattas" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['cut piece', 'cutpiece', 'cut-piece'],
+      response: `✂️ We specialize in quality fabric <strong>Cut Pieces</strong> in various sizes, textures and patterns.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Cut Pieces" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['matching', 'matching material', 'coordinated', 'set'],
+      response: `🎨 Our <strong>Matching Materials</strong> are perfectly coordinated fabric sets for a complete, harmonious look.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Matching Materials" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['price', 'cost', 'rate', 'kitna', 'charge', 'how much', 'budget', 'expensive', 'cheap', 'afford'],
+      response: `💰 Pricing depends on the fabric type, quality, and quantity. We offer a great range at competitive prices!<br><br>For exact pricing, please reach out to us:<br><a href="${WHATSAPP_LINK}?text=Hi, I'd like to know about pricing" target="_blank" rel="noopener">📱 WhatsApp us for pricing →</a><br>or call <a href="${PHONE_LINK}">${PHONE}</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['order', 'book', 'buy', 'purchase', 'reserve', 'delivery', 'deliver', 'ship', 'online', 'kharidna', 'lena'],
+      response: `🛒 To place an order or book items, please contact us directly on WhatsApp. Our team will assist you with availability, pricing and more!<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'd like to place an order" target="_blank" rel="noopener">📱 <strong>Order on WhatsApp: ${PHONE}</strong> →</a>`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['payment', 'upi', 'cash', 'card', 'gpay', 'paytm', 'phonpe', 'pay'],
+      response: `💳 We accept <strong>Cash</strong> and <strong>UPI</strong> payments at our store. Come visit us for a seamless shopping experience!`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['history', 'since', 'year', 'old', 'established', 'heritage', 'about', 'story'],
+      response: `🏛️ <strong>Sanjay Cut Piece</strong> has been serving Thane since <strong>1977</strong> — that's over 47 years of trust, quality fabrics, and traditional values. We're a well-known name at Jambli Naka, Thane West.`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['thank', 'thanks', 'dhanyawad', 'shukriya', 'tq', 'thx'],
+      response: `You're welcome! 🙏 If you need anything else, feel free to ask. We're always happy to help!<br><br>You can also reach us on <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">WhatsApp</a> anytime.`,
+      followUp: 'main'
+    },
+    {
+      keywords: ['bye', 'goodbye', 'see you', 'later', 'alvida'],
+      response: `Goodbye! 🙏 Thank you for chatting with us. Visit us at Jambli Naka, Thane West anytime. Have a wonderful day!`,
+      followUp: null
+    },
+  ];
+
+  // ---- Quick Reply Menus ----
+  const QUICK_REPLIES = {
+    main: [
+      { label: '🕐 Store Timings', message: 'What are your store timings?' },
+      { label: '📍 Location', message: 'Where is your store?' },
+      { label: '🛍️ Collections', message: 'What collections do you have?' },
+      { label: '💰 Pricing', message: 'Tell me about pricing' },
+      { label: '🛒 Place Order', message: 'I want to place an order' },
+      { label: '📱 WhatsApp', message: 'I want to message on WhatsApp' },
+    ],
+    collections: [
+      { label: '👗 Dress Materials', message: 'Tell me about dress materials' },
+      { label: '👚 Blouse Materials', message: 'Tell me about blouse materials' },
+      { label: '✂️ Cut Pieces', message: 'Tell me about cut pieces' },
+      { label: '🧣 Dupattas', message: 'Tell me about dupattas' },
+      { label: '🧵 Fabrics', message: 'Tell me about fabrics' },
+      { label: '🎨 Matching Materials', message: 'Tell me about matching materials' },
+      { label: '🔙 Main Menu', message: 'Hi' },
+    ]
+  };
+
+  const DEFAULT_RESPONSE = `I'm not sure I understood that. You can ask me about our store timings, location, collections, or pricing.<br><br>For more detailed inquiries, please message us directly on WhatsApp:<br><a href="${WHATSAPP_LINK}?text=Hi, I need help with..." target="_blank" rel="noopener">📱 <strong>WhatsApp: ${PHONE}</strong> →</a>`;
+
+  // ---- DOM Elements ----
+  const toggle = document.getElementById('chatbot-toggle');
+  const badge = document.getElementById('chatbot-badge');
+  const logoIcon = document.getElementById('chatbot-toggle-logo');
+  const closeIcon = document.getElementById('chatbot-toggle-close');
+  const chatWindow = document.getElementById('chatbot-window');
+  const closeBtn = document.getElementById('chatbot-close');
+  const messagesEl = document.getElementById('chatbot-messages');
+  const quickRepliesEl = document.getElementById('chatbot-quick-replies');
+  const inputEl = document.getElementById('chatbot-input');
+  const sendBtn = document.getElementById('chatbot-send');
+
+  let isOpen = false;
+  let hasGreeted = false;
+
+  // ---- Toggle Chat ----
+  function openChat() {
+    isOpen = true;
+    chatWindow.classList.add('open');
+    chatWindow.setAttribute('aria-hidden', 'false');
+    logoIcon.style.display = 'none';
+    closeIcon.style.display = 'block';
+    badge.classList.add('hidden');
+    toggle.style.animation = 'none';
+
+    if (!hasGreeted) {
+      hasGreeted = true;
+      showTypingThenReply(
+        `Namaste! 🙏 Welcome to <strong>Sanjay Cut Piece</strong>.<br>I can help you with store info, collections, pricing & more.<br><br>How can I assist you today?`,
+        'main'
+      );
+    }
+
+    setTimeout(() => inputEl.focus(), 400);
+  }
+
+  function closeChat() {
+    isOpen = false;
+    chatWindow.classList.remove('open');
+    chatWindow.setAttribute('aria-hidden', 'true');
+    logoIcon.style.display = 'block';
+    closeIcon.style.display = 'none';
+  }
+
+  toggle.addEventListener('click', () => {
+    if (isOpen) closeChat();
+    else openChat();
+  });
+
+  closeBtn.addEventListener('click', closeChat);
+
+  // ---- Message Rendering ----
+  function addMessage(text, sender) {
+    const div = document.createElement('div');
+    div.className = `chatbot-msg chatbot-msg--${sender}`;
+    div.innerHTML = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'chatbot-typing';
+    div.id = 'chatbot-typing-indicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('chatbot-typing-indicator');
+    if (el) el.remove();
+  }
+
+  function showTypingThenReply(text, quickReplyMenu) {
+    showTyping();
+    const delay = 600 + Math.random() * 500;
+    setTimeout(() => {
+      removeTyping();
+      addMessage(text, 'bot');
+      if (quickReplyMenu && QUICK_REPLIES[quickReplyMenu]) {
+        renderQuickReplies(quickReplyMenu);
+      }
+    }, delay);
+  }
+
+  // ---- Quick Replies ----
+  function renderQuickReplies(menuKey) {
+    quickRepliesEl.innerHTML = '';
+    const items = QUICK_REPLIES[menuKey] || [];
+    items.forEach(item => {
+      const btn = document.createElement('button');
+      btn.className = 'chatbot-qr';
+      btn.textContent = item.label;
+      btn.addEventListener('click', () => {
+        handleUserMessage(item.message);
+      });
+      quickRepliesEl.appendChild(btn);
+    });
+  }
+
+  // ---- Message Processing ----
+  function findResponse(input) {
+    const lower = input.toLowerCase().trim();
+    for (const rule of FAQ_RULES) {
+      for (const kw of rule.keywords) {
+        if (lower.includes(kw)) {
+          return { response: rule.response, followUp: rule.followUp };
+        }
+      }
+    }
+    return { response: DEFAULT_RESPONSE, followUp: 'main' };
+  }
+
+  function handleUserMessage(text) {
+    if (!text.trim()) return;
+    addMessage(text, 'user');
+    quickRepliesEl.innerHTML = '';
+    inputEl.value = '';
+
+    const { response, followUp } = findResponse(text);
+    showTypingThenReply(response, followUp);
+  }
+
+  // ---- Input Events ----
+  sendBtn.addEventListener('click', () => {
+    handleUserMessage(inputEl.value);
+  });
+
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleUserMessage(inputEl.value);
+    }
+  });
+
+  // ---- Close on Escape ----
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) {
+      closeChat();
+    }
+  });
+</script>
