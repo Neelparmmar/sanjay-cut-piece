@@ -128,6 +128,24 @@ const relatedCollections = business.collections
       </div>
     </section>
 
+    <!-- Cinematic Slideshow Section -->
+    <section class="cinematic" aria-label="Fabric showcase">
+      <div class="cinematic__slides">
+        <div class="cinematic__slide cinematic__slide--1"></div>
+        <div class="cinematic__slide cinematic__slide--2"></div>
+        <div class="cinematic__slide cinematic__slide--3"></div>
+        <div class="cinematic__slide cinematic__slide--4"></div>
+        <div class="cinematic__slide cinematic__slide--5"></div>
+      </div>
+      <div class="cinematic__overlay"></div>
+      <div class="cinematic__content">
+        <span class="cinematic__label">Our Collection</span>
+        <h2 class="cinematic__title">{locCollection.name}</h2>
+        <div class="cinematic__line"></div>
+        <p class="cinematic__tagline">Traditional • Trendy • Timeless</p>
+      </div>
+    </section>
+
     <!-- Internal Linking Section: Explore Other Landing Pages -->
     <section class="landing-related section" style="background: var(--cream-200);">
       <div class="container">
@@ -503,5 +521,155 @@ const relatedCollections = business.collections
 
   .text-center {
     text-align: center;
+  }
+
+  /* ---- Cinematic Slideshow ---- */
+  .cinematic {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    min-height: 360px;
+    max-height: 500px;
+    overflow: hidden;
+  }
+
+  .cinematic__slides {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cinematic__slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    animation: cineFade 25s infinite;
+    will-change: opacity, transform;
+  }
+
+  .cinematic__slide--1 {
+    background-image: url('/images/hero-background.png');
+    animation-delay: 0s;
+    animation-name: cineFade, cineZoom1;
+  }
+  .cinematic__slide--2 {
+    background-image: url('/images/dress-materials.png');
+    animation-delay: 5s;
+    animation-name: cineFade, cineZoom2;
+  }
+  .cinematic__slide--3 {
+    background-image: url('/images/blouse-materials.png');
+    animation-delay: 10s;
+    animation-name: cineFade, cineZoom1;
+  }
+  .cinematic__slide--4 {
+    background-image: url('/images/dupattas.png');
+    animation-delay: 15s;
+    animation-name: cineFade, cineZoom2;
+  }
+  .cinematic__slide--5 {
+    background-image: url('/images/matching-materials.png');
+    animation-delay: 20s;
+    animation-name: cineFade, cineZoom1;
+  }
+
+  @keyframes cineFade {
+    0%     { opacity: 0; }
+    4%     { opacity: 1; }
+    20%    { opacity: 1; }
+    24%    { opacity: 0; }
+    100%   { opacity: 0; }
+  }
+
+  @keyframes cineZoom1 {
+    0%     { transform: scale(1); }
+    20%    { transform: scale(1.08); }
+    100%   { transform: scale(1.08); }
+  }
+
+  @keyframes cineZoom2 {
+    0%     { transform: scale(1.06); }
+    20%    { transform: scale(1); }
+    100%   { transform: scale(1); }
+  }
+
+  .cinematic__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(74, 14, 28, 0.5) 0%,
+      rgba(74, 14, 28, 0.75) 50%,
+      rgba(42, 8, 16, 0.85) 100%
+    );
+    z-index: 1;
+  }
+
+  .cinematic__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .cinematic__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold-400);
+    margin-bottom: 0.75rem;
+    opacity: 0;
+    animation: cineFadeIn 1s 0.5s forwards;
+  }
+
+  .cinematic__title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--white);
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: cineFadeIn 1s 0.8s forwards;
+  }
+
+  .cinematic__line {
+    width: 60px;
+    height: 2px;
+    background: var(--gold-500);
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: cineLineGrow 1s 1.1s forwards;
+  }
+
+  .cinematic__tagline {
+    font-size: 0.9375rem;
+    color: var(--cream-300);
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: cineFadeIn 1s 1.4s forwards;
+  }
+
+  @keyframes cineFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes cineLineGrow {
+    from { opacity: 0; width: 0; }
+    to   { opacity: 1; width: 60px; }
+  }
+
+  @media (max-width: 640px) {
+    .cinematic {
+      height: 45vh;
+      min-height: 280px;
+    }
   }
 </style>
