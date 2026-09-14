@@ -466,8 +466,8 @@ import business from '../data/business.json';
 
 <script define:vars={{ business }}>
   // ============================================
-  // SANJAY CUT PIECE — CHATBOT ENGINE
-  // Rule-based FAQ chatbot with WhatsApp handoff
+  // SANJAY CUT PIECE — MULTILINGUAL CHATBOT
+  // Language selection → FAQ in chosen language
   // ============================================
 
   const WHATSAPP_LINK = business.whatsappLink;
@@ -478,142 +478,430 @@ import business from '../data/business.json';
   const MAPS_LINK = business.mapsLink;
   const COLLECTIONS = business.collections;
 
-  // ---- FAQ Knowledge Base ----
-  const FAQ_RULES = [
-    {
-      keywords: ['hello', 'hi', 'hey', 'namaste', 'hii', 'helo', 'good morning', 'good afternoon', 'good evening'],
-      response: `Namaste! 🙏 Welcome to <strong>Sanjay Cut Piece</strong>. How can I help you today?`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['hour', 'timing', 'time', 'open', 'close', 'when', 'schedule', 'kab', 'kitne baje'],
-      response: `🕐 We are open <strong>${HOURS.days}</strong> from <strong>${HOURS.display}</strong>. Come visit us anytime during these hours!`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['where', 'location', 'address', 'kahan', 'direction', 'map', 'find', 'reach', 'store'],
-      response: `📍 Our store is at:<br><strong>${ADDRESS.line1}</strong><br>${ADDRESS.line2}<br>${ADDRESS.area}, ${ADDRESS.city} — ${ADDRESS.pincode}<br><br><a href="${MAPS_LINK}" target="_blank" rel="noopener">📌 Open in Google Maps →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['phone', 'call', 'contact', 'number', 'mobile', 'ring'],
-      response: `📞 You can call us at <a href="${PHONE_LINK}"><strong>${PHONE}</strong></a>. Or message us on <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> for quick replies!`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['whatsapp', 'message', 'chat', 'msg', 'wa'],
-      response: `💬 You can message us directly on WhatsApp for quick assistance!<br><br><a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">📱 Chat on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['collection', 'product', 'sell', 'available', 'what do you', 'range', 'category', 'item'],
-      response: `🛍️ We have a wide range of collections:<br><br>${COLLECTIONS.map(c => `• <strong>${c.name}</strong> — ${c.description.split('.')[0]}`).join('<br>')}<br><br>Would you like to know more about any specific collection?`,
-      followUp: 'collections'
-    },
-    {
-      keywords: ['dress material', 'unstitched', 'suit'],
-      response: `👗 Our <strong>Dress Materials</strong> collection includes exquisite unstitched fabrics in cotton, silk, linen, georgette, chanderi and more. Perfect for custom tailoring!<br><br>Want to inquire about specific fabrics? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Dress Materials" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['blouse material', 'blouse fabric'],
-      response: `👚 We offer premium <strong>Blouse Materials</strong> in silk, brocade, raw silk, cotton, fancy prints and more.<br><br>Want to check availability? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Blouse Materials" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['ready made blouse', 'readymade', 'stitched blouse'],
-      response: `✨ Our <strong>Ready Made Blouses</strong> come in various styles for traditional, party wear and everyday occasions.<br><br>Want to see options? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Ready Made Blouses" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['fabric', 'kapda', 'cloth'],
-      response: `🧵 We carry a wide selection of quality <strong>Fabrics</strong> for all your creative needs and custom tailoring.<br><br>Looking for something specific? <a href="${WHATSAPP_LINK}?text=Hi, I'm looking for specific fabrics" target="_blank" rel="noopener">Tell us on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['legging', 'leggings'],
-      response: `🩳 We have comfortable, stylish <strong>Leggings</strong> in a variety of colours for everyday wear.<br><br>Interested? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Leggings" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['petticoat', 'saree petticoat'],
-      response: `Quality <strong>Saree Petticoats</strong> available in cotton, silk, satin — both elastic and stitched options.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Saree Petticoats" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['shapewear', 'body shaper'],
-      response: `Our <strong>Saree Shapewear</strong> offers a smooth, comfortable fit for all-day ease with your saree.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Saree Shapewear" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['dupatta', 'chunni'],
-      response: `🧣 Elegant <strong>Dupattas</strong> available in Banarasi, Kalamkari, chiffon, georgette, net, organza and more.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Dupattas" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['cut piece', 'cutpiece', 'cut-piece'],
-      response: `✂️ We specialize in quality fabric <strong>Cut Pieces</strong> in various sizes, textures and patterns.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Cut Pieces" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['matching', 'matching material', 'coordinated', 'set'],
-      response: `🎨 Our <strong>Matching Materials</strong> are perfectly coordinated fabric sets for a complete, harmonious look.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Matching Materials" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['price', 'cost', 'rate', 'kitna', 'charge', 'how much', 'budget', 'expensive', 'cheap', 'afford'],
-      response: `💰 Pricing depends on the fabric type, quality, and quantity. We offer a great range at competitive prices!<br><br>For exact pricing, please reach out to us:<br><a href="${WHATSAPP_LINK}?text=Hi, I'd like to know about pricing" target="_blank" rel="noopener">📱 WhatsApp us for pricing →</a><br>or call <a href="${PHONE_LINK}">${PHONE}</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['order', 'book', 'buy', 'purchase', 'reserve', 'delivery', 'deliver', 'ship', 'online', 'kharidna', 'lena'],
-      response: `🛒 To place an order or book items, please contact us directly on WhatsApp. Our team will assist you with availability, pricing and more!<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'd like to place an order" target="_blank" rel="noopener">📱 <strong>Order on WhatsApp: ${PHONE}</strong> →</a>`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['payment', 'upi', 'cash', 'card', 'gpay', 'paytm', 'phonpe', 'pay'],
-      response: `💳 We accept <strong>Cash</strong> and <strong>UPI</strong> payments at our store. Come visit us for a seamless shopping experience!`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['history', 'since', 'year', 'old', 'established', 'heritage', 'about', 'story'],
-      response: `🏛️ <strong>Sanjay Cut Piece</strong> has been serving Thane since <strong>1977</strong> — that's over 47 years of trust, quality fabrics, and traditional values. We're a well-known name at Jambli Naka, Thane West.`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['thank', 'thanks', 'dhanyawad', 'shukriya', 'tq', 'thx'],
-      response: `You're welcome! 🙏 If you need anything else, feel free to ask. We're always happy to help!<br><br>You can also reach us on <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">WhatsApp</a> anytime.`,
-      followUp: 'main'
-    },
-    {
-      keywords: ['bye', 'goodbye', 'see you', 'later', 'alvida'],
-      response: `Goodbye! 🙏 Thank you for chatting with us. Visit us at Jambli Naka, Thane West anytime. Have a wonderful day!`,
-      followUp: null
-    },
-  ];
+  // ---- Current language state ----
+  let currentLang = null; // null = not yet selected
 
-  // ---- Quick Reply Menus ----
-  const QUICK_REPLIES = {
-    main: [
-      { label: '🕐 Store Timings', message: 'What are your store timings?' },
-      { label: '📍 Location', message: 'Where is your store?' },
-      { label: '🛍️ Collections', message: 'What collections do you have?' },
-      { label: '💰 Pricing', message: 'Tell me about pricing' },
-      { label: '🛒 Place Order', message: 'I want to place an order' },
-      { label: '📱 WhatsApp', message: 'I want to message on WhatsApp' },
-    ],
-    collections: [
-      { label: '👗 Dress Materials', message: 'Tell me about dress materials' },
-      { label: '👚 Blouse Materials', message: 'Tell me about blouse materials' },
-      { label: '✂️ Cut Pieces', message: 'Tell me about cut pieces' },
-      { label: '🧣 Dupattas', message: 'Tell me about dupattas' },
-      { label: '🧵 Fabrics', message: 'Tell me about fabrics' },
-      { label: '🎨 Matching Materials', message: 'Tell me about matching materials' },
-      { label: '🔙 Main Menu', message: 'Hi' },
-    ]
+  // ============================================
+  // TRANSLATIONS — All chatbot strings by language
+  // ============================================
+  const LANG_DATA = {
+    en: {
+      name: 'English',
+      greetAfterLang: `Great! Let's continue in English. 🇬🇧<br><br>I can help you with store info, collections, pricing & more.<br>How can I assist you today?`,
+      inputPlaceholder: 'Type your message...',
+      headerStatus: 'Online — We typically reply instantly',
+      defaultResponse: `I'm not sure I understood that. You can ask me about our store timings, location, collections, or pricing.<br><br>For more detailed inquiries, please message us directly on WhatsApp:<br><a href="${WHATSAPP_LINK}?text=Hi, I need help with..." target="_blank" rel="noopener">📱 <strong>WhatsApp: ${PHONE}</strong> →</a>`,
+      quickReplies: {
+        main: [
+          { label: '🕐 Store Timings', message: 'What are your store timings?' },
+          { label: '📍 Location', message: 'Where is your store?' },
+          { label: '🛍️ Collections', message: 'What collections do you have?' },
+          { label: '💰 Pricing', message: 'Tell me about pricing' },
+          { label: '🛒 Place Order', message: 'I want to place an order' },
+          { label: '📱 WhatsApp', message: 'I want to message on WhatsApp' },
+        ],
+        collections: [
+          { label: '👗 Dress Materials', message: 'Tell me about dress materials' },
+          { label: '👚 Blouse Materials', message: 'Tell me about blouse materials' },
+          { label: '✂️ Cut Pieces', message: 'Tell me about cut pieces' },
+          { label: '🧣 Dupattas', message: 'Tell me about dupattas' },
+          { label: '🧵 Fabrics', message: 'Tell me about fabrics' },
+          { label: '🎨 Matching Materials', message: 'Tell me about matching materials' },
+          { label: '🔙 Main Menu', message: 'Hi' },
+        ]
+      },
+      faq: [
+        {
+          keywords: ['hello', 'hi', 'hey', 'namaste', 'hii', 'helo', 'good morning', 'good afternoon', 'good evening'],
+          response: `Namaste! 🙏 Welcome to <strong>Sanjay Cut Piece</strong>. How can I help you today?`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['hour', 'timing', 'time', 'open', 'close', 'when', 'schedule'],
+          response: `🕐 We are open <strong>${HOURS.days}</strong> from <strong>${HOURS.display}</strong>. Come visit us anytime during these hours!`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['where', 'location', 'address', 'direction', 'map', 'find', 'reach', 'store'],
+          response: `📍 Our store is at:<br><strong>${ADDRESS.line1}</strong><br>${ADDRESS.line2}<br>${ADDRESS.area}, ${ADDRESS.city} — ${ADDRESS.pincode}<br><br><a href="${MAPS_LINK}" target="_blank" rel="noopener">📌 Open in Google Maps →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['phone', 'call', 'contact', 'number', 'mobile', 'ring'],
+          response: `📞 You can call us at <a href="${PHONE_LINK}"><strong>${PHONE}</strong></a>. Or message us on <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> for quick replies!`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['whatsapp', 'message', 'chat', 'msg', 'wa'],
+          response: `💬 You can message us directly on WhatsApp for quick assistance!<br><br><a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">📱 Chat on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['collection', 'product', 'sell', 'available', 'what do you', 'range', 'category', 'item'],
+          response: `🛍️ We have a wide range of collections:<br><br>${COLLECTIONS.map(c => `• <strong>${c.name}</strong> — ${c.description.split('.')[0]}`).join('<br>')}<br><br>Would you like to know more about any specific collection?`,
+          followUp: 'collections'
+        },
+        {
+          keywords: ['dress material', 'unstitched', 'suit'],
+          response: `👗 Our <strong>Dress Materials</strong> collection includes exquisite unstitched fabrics in cotton, silk, linen, georgette, chanderi and more.<br><br>Want to inquire? <a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Dress Materials" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['blouse material', 'blouse fabric'],
+          response: `👚 We offer premium <strong>Blouse Materials</strong> in silk, brocade, raw silk, cotton, fancy prints and more.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Blouse Materials" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['ready made blouse', 'readymade', 'stitched blouse'],
+          response: `✨ Our <strong>Ready Made Blouses</strong> come in various styles for traditional, party wear and everyday occasions.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Ready Made Blouses" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['fabric', 'kapda', 'cloth'],
+          response: `🧵 We carry a wide selection of quality <strong>Fabrics</strong> for all your creative needs and custom tailoring.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm looking for specific fabrics" target="_blank" rel="noopener">Tell us on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['legging', 'leggings'],
+          response: `🩳 We have comfortable, stylish <strong>Leggings</strong> in a variety of colours for everyday wear.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Leggings" target="_blank" rel="noopener">Message on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['petticoat', 'saree petticoat'],
+          response: `Quality <strong>Saree Petticoats</strong> available in cotton, silk, satin — both elastic and stitched options.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Saree Petticoats" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['shapewear', 'body shaper'],
+          response: `Our <strong>Saree Shapewear</strong> offers a smooth, comfortable fit for all-day ease with your saree.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Saree Shapewear" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['dupatta', 'chunni'],
+          response: `🧣 Elegant <strong>Dupattas</strong> available in Banarasi, Kalamkari, chiffon, georgette, net, organza and more.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Dupattas" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['cut piece', 'cutpiece', 'cut-piece'],
+          response: `✂️ We specialize in quality fabric <strong>Cut Pieces</strong> in various sizes, textures and patterns.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Cut Pieces" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['matching', 'matching material', 'coordinated', 'set'],
+          response: `🎨 Our <strong>Matching Materials</strong> are perfectly coordinated fabric sets for a complete, harmonious look.<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'm interested in Matching Materials" target="_blank" rel="noopener">Inquire on WhatsApp →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['price', 'cost', 'rate', 'kitna', 'charge', 'how much', 'budget'],
+          response: `💰 Pricing depends on the fabric type, quality, and quantity. We offer a great range at competitive prices!<br><br>For exact pricing:<br><a href="${WHATSAPP_LINK}?text=Hi, I'd like to know about pricing" target="_blank" rel="noopener">📱 WhatsApp us for pricing →</a><br>or call <a href="${PHONE_LINK}">${PHONE}</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['order', 'book', 'buy', 'purchase', 'reserve', 'delivery', 'deliver', 'ship', 'online'],
+          response: `🛒 To place an order or book items, please contact us directly on WhatsApp. Our team will assist you!<br><br><a href="${WHATSAPP_LINK}?text=Hi, I'd like to place an order" target="_blank" rel="noopener">📱 <strong>Order on WhatsApp: ${PHONE}</strong> →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['payment', 'upi', 'cash', 'card', 'gpay', 'paytm', 'phonpe', 'pay'],
+          response: `💳 We accept <strong>Cash</strong> and <strong>UPI</strong> payments at our store.`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['history', 'since', 'year', 'old', 'established', 'heritage', 'about', 'story'],
+          response: `🏛️ <strong>Sanjay Cut Piece</strong> has been serving Thane since <strong>1977</strong> — over 47 years of trust, quality fabrics, and traditional values at Jambli Naka, Thane West.`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['thank', 'thanks', 'dhanyawad', 'shukriya', 'tq', 'thx'],
+          response: `You're welcome! 🙏 If you need anything else, feel free to ask.<br><br>You can also reach us on <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">WhatsApp</a> anytime.`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['bye', 'goodbye', 'see you', 'later'],
+          response: `Goodbye! 🙏 Thank you for chatting with us. Visit us at Jambli Naka, Thane West anytime. Have a wonderful day!`,
+          followUp: null
+        },
+      ]
+    },
+
+    hi: {
+      name: 'हिन्दी',
+      greetAfterLang: `बहुत अच्छा! चलिए हिन्दी में बात करते हैं। 🇮🇳<br><br>मैं आपकी मदद कर सकता हूँ — दुकान की जानकारी, कलेक्शन, कीमत और भी बहुत कुछ।<br>आज मैं आपकी कैसे सहायता कर सकता हूँ?`,
+      inputPlaceholder: 'अपना संदेश लिखें...',
+      headerStatus: 'ऑनलाइन — हम तुरंत जवाब देते हैं',
+      defaultResponse: `मुझे आपकी बात समझ नहीं आई। आप दुकान का समय, पता, कलेक्शन या कीमत के बारे में पूछ सकते हैं।<br><br>अधिक जानकारी के लिए WhatsApp पर संपर्क करें:<br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे मदद चाहिए" target="_blank" rel="noopener">📱 <strong>WhatsApp: ${PHONE}</strong> →</a>`,
+      quickReplies: {
+        main: [
+          { label: '🕐 दुकान का समय', message: 'दुकान कब खुलती है?' },
+          { label: '📍 पता', message: 'दुकान कहाँ है?' },
+          { label: '🛍️ कलेक्शन', message: 'क्या-क्या मिलता है?' },
+          { label: '💰 कीमत', message: 'कीमत बताइए' },
+          { label: '🛒 ऑर्डर करें', message: 'मुझे ऑर्डर करना है' },
+          { label: '📱 WhatsApp', message: 'WhatsApp पर बात करनी है' },
+        ],
+        collections: [
+          { label: '👗 ड्रेस मटेरियल', message: 'ड्रेस मटेरियल के बारे में बताइए' },
+          { label: '👚 ब्लाउज मटेरियल', message: 'ब्लाउज मटेरियल के बारे में बताइए' },
+          { label: '✂️ कट पीस', message: 'कट पीस के बारे में बताइए' },
+          { label: '🧣 दुपट्टा', message: 'दुपट्टे के बारे में बताइए' },
+          { label: '🧵 कपड़े', message: 'कपड़ों के बारे में बताइए' },
+          { label: '🎨 मैचिंग मटेरियल', message: 'मैचिंग मटेरियल के बारे में बताइए' },
+          { label: '🔙 मुख्य मेनू', message: 'नमस्ते' },
+        ]
+      },
+      faq: [
+        {
+          keywords: ['नमस्ते', 'हेलो', 'हाय', 'hello', 'hi', 'hey', 'good morning', 'good afternoon'],
+          response: `नमस्ते! 🙏 <strong>संजय कट पीस</strong> में आपका स्वागत है। आज मैं आपकी कैसे मदद कर सकता हूँ?`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['समय', 'टाइम', 'कब', 'खुल', 'बंद', 'hour', 'timing', 'time', 'open', 'close'],
+          response: `🕐 हमारी दुकान <strong>${HOURS.days}</strong> — <strong>${HOURS.display}</strong> तक खुली रहती है। कभी भी आइए!`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कहाँ', 'कहां', 'पता', 'लोकेशन', 'एड्रेस', 'रास्ता', 'where', 'location', 'address', 'direction'],
+          response: `📍 हमारी दुकान:<br><strong>${ADDRESS.line1}</strong><br>${ADDRESS.line2}<br>${ADDRESS.area}, ${ADDRESS.city} — ${ADDRESS.pincode}<br><br><a href="${MAPS_LINK}" target="_blank" rel="noopener">📌 Google Maps में खोलें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['फोन', 'कॉल', 'नंबर', 'मोबाइल', 'phone', 'call', 'contact', 'number'],
+          response: `📞 हमें कॉल करें: <a href="${PHONE_LINK}"><strong>${PHONE}</strong></a><br>या <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> पर मैसेज करें!`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['whatsapp', 'व्हाट्सएप', 'मैसेज', 'message'],
+          response: `💬 WhatsApp पर हमसे सीधे बात करें!<br><br><a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">📱 WhatsApp पर चैट करें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कलेक्शन', 'प्रोडक्ट', 'क्या मिलता', 'क्या-क्या', 'रेंज', 'collection', 'product', 'available', 'range'],
+          response: `🛍️ हमारे पास बहुत बड़ा कलेक्शन है:<br><br>• <strong>ड्रेस मटेरियल</strong> — कॉटन, सिल्क, लिनन, जॉर्जेट<br>• <strong>ब्लाउज मटेरियल</strong> — सिल्क, ब्रोकेड, रॉ सिल्क<br>• <strong>रेडीमेड ब्लाउज</strong> — पार्टी और रोजाना के लिए<br>• <strong>कपड़े</strong> — हर तरह के फैब्रिक<br>• <strong>लेगिंग्स</strong> — कई रंगों में<br>• <strong>साड़ी पेटीकोट</strong> — कॉटन, सिल्क, सैटिन<br>• <strong>दुपट्टे</strong> — बनारसी, शिफॉन, जॉर्जेट<br>• <strong>कट पीस</strong> — विभिन्न साइज़<br>• <strong>मैचिंग मटेरियल</strong> — कोऑर्डिनेटेड सेट<br><br>किसी भी कलेक्शन के बारे में और जानना है?`,
+          followUp: 'collections'
+        },
+        {
+          keywords: ['ड्रेस मटेरियल', 'ड्रेस', 'सूट', 'dress material', 'unstitched', 'suit'],
+          response: `👗 हमारे <strong>ड्रेस मटेरियल</strong> कलेक्शन में कॉटन, सिल्क, लिनन, जॉर्जेट, चंदेरी और भी बहुत कुछ है।<br><br>पूछताछ के लिए: <a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे ड्रेस मटेरियल चाहिए" target="_blank" rel="noopener">WhatsApp पर मैसेज करें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['ब्लाउज मटेरियल', 'ब्लाउज कपड़ा', 'blouse material', 'blouse fabric'],
+          response: `👚 प्रीमियम <strong>ब्लाउज मटेरियल</strong> — सिल्क, ब्रोकेड, रॉ सिल्क, कॉटन, फैंसी प्रिंट्स।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे ब्लाउज मटेरियल चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['रेडीमेड ब्लाउज', 'सिला हुआ', 'readymade', 'ready made blouse', 'stitched blouse'],
+          response: `✨ <strong>रेडीमेड ब्लाउज</strong> — पारंपरिक, पार्टी वेयर और रोजाना के लिए।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे रेडीमेड ब्लाउज चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कपड़ा', 'कपड़े', 'फैब्रिक', 'fabric', 'kapda', 'cloth'],
+          response: `🧵 हमारे पास हर तरह के <strong>कपड़े</strong> उपलब्ध हैं — सिलाई, क्रिएटिव प्रोजेक्ट्स, सब के लिए।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे कपड़े चाहिए" target="_blank" rel="noopener">WhatsApp पर बताएं →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['लेगिंग', 'legging', 'leggings'],
+          response: `🩳 आरामदायक और स्टाइलिश <strong>लेगिंग्स</strong> कई रंगों में।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे लेगिंग्स चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['पेटीकोट', 'petticoat', 'saree petticoat'],
+          response: `<strong>साड़ी पेटीकोट</strong> — कॉटन, सिल्क, सैटिन — इलास्टिक और सिले हुए दोनों।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे साड़ी पेटीकोट चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['शेपवेयर', 'shapewear'],
+          response: `<strong>साड़ी शेपवेयर</strong> — पूरे दिन आराम से साड़ी पहनें।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे साड़ी शेपवेयर चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['दुपट्टा', 'चुन्नी', 'dupatta', 'chunni'],
+          response: `🧣 शानदार <strong>दुपट्टे</strong> — बनारसी, कलमकारी, शिफॉन, जॉर्जेट, नेट, ऑर्गेंज़ा।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे दुपट्टा चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कट पीस', 'cutpiece', 'cut piece', 'cut-piece'],
+          response: `✂️ क्वालिटी <strong>कट पीस</strong> — विभिन्न साइज़, टेक्सचर और पैटर्न।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे कट पीस चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['मैचिंग', 'कोऑर्डिनेटेड', 'सेट', 'matching', 'coordinated'],
+          response: `🎨 <strong>मैचिंग मटेरियल</strong> — पूरी तरह कोऑर्डिनेटेड फैब्रिक सेट।<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे मैचिंग मटेरियल चाहिए" target="_blank" rel="noopener">WhatsApp पर पूछें →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कीमत', 'दाम', 'रेट', 'कितना', 'price', 'cost', 'rate', 'kitna', 'charge', 'how much'],
+          response: `💰 कीमत कपड़े के प्रकार, क्वालिटी और मात्रा पर निर्भर करती है।<br><br>सटीक कीमत के लिए:<br><a href="${WHATSAPP_LINK}?text=नमस्ते, कीमत जानना है" target="_blank" rel="noopener">📱 WhatsApp पर पूछें →</a><br>या कॉल करें: <a href="${PHONE_LINK}">${PHONE}</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['ऑर्डर', 'बुक', 'खरीद', 'लेना', 'डिलीवरी', 'order', 'book', 'buy', 'purchase', 'delivery'],
+          response: `🛒 ऑर्डर देने के लिए सीधे WhatsApp पर संपर्क करें। हमारी टीम आपकी मदद करेगी!<br><br><a href="${WHATSAPP_LINK}?text=नमस्ते, मुझे ऑर्डर करना है" target="_blank" rel="noopener">📱 <strong>WhatsApp: ${PHONE}</strong> →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['पेमेंट', 'भुगतान', 'upi', 'कैश', 'payment', 'cash', 'gpay', 'paytm', 'pay'],
+          response: `💳 हम <strong>कैश</strong> और <strong>UPI</strong> पेमेंट स्वीकार करते हैं।`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['इतिहास', 'कब से', 'पुराना', 'स्थापित', 'बारे में', 'history', 'since', 'about', 'heritage', 'story'],
+          response: `🏛️ <strong>संजय कट पीस</strong> 1977 से ठाणे में सेवा दे रहा है — 47+ साल का विश्वास, गुणवत्ता और पारंपरिक मूल्य।`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['धन्यवाद', 'शुक्रिया', 'thank', 'thanks', 'tq', 'thx'],
+          response: `आपका स्वागत है! 🙏 कुछ और पूछना हो तो बेझिझक पूछें।<br><br><a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">WhatsApp</a> पर भी संपर्क कर सकते हैं।`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['बाय', 'अलविदा', 'bye', 'goodbye'],
+          response: `अलविदा! 🙏 चैट करने के लिए धन्यवाद। जांभळी नाका, ठाणे में कभी भी आइए। शुभ दिन!`,
+          followUp: null
+        },
+      ]
+    },
+
+    mr: {
+      name: 'मराठी',
+      greetAfterLang: `छान! चला मराठीत बोलूया। 🇮🇳<br><br>मी तुम्हाला दुकानाची माहिती, कलेक्शन, किंमत आणि बरंच काही सांगू शकतो.<br>आज मी तुमची कशी मदत करू?`,
+      inputPlaceholder: 'तुमचा संदेश लिहा...',
+      headerStatus: 'ऑनलाइन — आम्ही लगेच उत्तर देतो',
+      defaultResponse: `मला तुमचं नीट समजलं नाही. तुम्ही दुकानाची वेळ, पत्ता, कलेक्शन किंवा किंमत बद्दल विचारू शकता.<br><br>अधिक माहितीसाठी WhatsApp वर संपर्क करा:<br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला मदत हवी आहे" target="_blank" rel="noopener">📱 <strong>WhatsApp: ${PHONE}</strong> →</a>`,
+      quickReplies: {
+        main: [
+          { label: '🕐 दुकानाची वेळ', message: 'दुकान कधी उघडते?' },
+          { label: '📍 पत्ता', message: 'दुकान कुठे आहे?' },
+          { label: '🛍️ कलेक्शन', message: 'काय काय मिळतं?' },
+          { label: '💰 किंमत', message: 'किंमत सांगा' },
+          { label: '🛒 ऑर्डर करा', message: 'मला ऑर्डर करायचं आहे' },
+          { label: '📱 WhatsApp', message: 'WhatsApp वर बोलायचं आहे' },
+        ],
+        collections: [
+          { label: '👗 ड्रेस मटेरियल', message: 'ड्रेस मटेरियल बद्दल सांगा' },
+          { label: '👚 ब्लाउज मटेरियल', message: 'ब्लाउज मटेरियल बद्दल सांगा' },
+          { label: '✂️ कट पीस', message: 'कट पीस बद्दल सांगा' },
+          { label: '🧣 दुपट्टा', message: 'दुपट्टा बद्दल सांगा' },
+          { label: '🧵 कापड', message: 'कापडाबद्दल सांगा' },
+          { label: '🎨 मॅचिंग मटेरियल', message: 'मॅचिंग मटेरियल बद्दल सांगा' },
+          { label: '🔙 मुख्य मेनू', message: 'नमस्कार' },
+        ]
+      },
+      faq: [
+        {
+          keywords: ['नमस्कार', 'हॅलो', 'हाय', 'hello', 'hi', 'hey', 'good morning'],
+          response: `नमस्कार! 🙏 <strong>संजय कट पीस</strong> मध्ये आपले स्वागत आहे. आज मी तुमची कशी मदत करू?`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['वेळ', 'टाइम', 'कधी', 'उघड', 'बंद', 'hour', 'timing', 'time', 'open', 'close'],
+          response: `🕐 आमचं दुकान <strong>${HOURS.days}</strong> — <strong>${HOURS.display}</strong> उघडं असतं. कधीही या!`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कुठे', 'पत्ता', 'लोकेशन', 'ॲड्रेस', 'रस्ता', 'where', 'location', 'address', 'direction'],
+          response: `📍 आमचं दुकान:<br><strong>${ADDRESS.line1}</strong><br>${ADDRESS.line2}<br>${ADDRESS.area}, ${ADDRESS.city} — ${ADDRESS.pincode}<br><br><a href="${MAPS_LINK}" target="_blank" rel="noopener">📌 Google Maps मध्ये उघडा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['फोन', 'कॉल', 'नंबर', 'मोबाइल', 'phone', 'call', 'contact', 'number'],
+          response: `📞 आम्हाला कॉल करा: <a href="${PHONE_LINK}"><strong>${PHONE}</strong></a><br>किंवा <a href="${WHATSAPP_LINK}" target="_blank" rel="noopener"><strong>WhatsApp</strong></a> वर मेसेज करा!`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['whatsapp', 'व्हॉट्सॲप', 'मेसेज', 'message'],
+          response: `💬 WhatsApp वर आम्हाला थेट मेसेज करा!<br><br><a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">📱 WhatsApp वर चॅट करा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कलेक्शन', 'प्रॉडक्ट', 'काय मिळतं', 'काय-काय', 'रेंज', 'collection', 'product', 'available'],
+          response: `🛍️ आमच्याकडे मोठा कलेक्शन आहे:<br><br>• <strong>ड्रेस मटेरियल</strong> — कॉटन, सिल्क, लिनन, जॉर्जेट<br>• <strong>ब्लाउज मटेरियल</strong> — सिल्क, ब्रोकेड<br>• <strong>रेडीमेड ब्लाउज</strong> — पार्टी आणि रोजच्या वापरासाठी<br>• <strong>कापड</strong> — सर्व प्रकारचे<br>• <strong>लेगिंग्स</strong> — अनेक रंगांत<br>• <strong>साडी पेटीकोट</strong> — कॉटन, सिल्क, सॅटिन<br>• <strong>दुपट्टे</strong> — बनारसी, शिफॉन, जॉर्जेट<br>• <strong>कट पीस</strong> — वेगवेगळ्या साइज<br>• <strong>मॅचिंग मटेरियल</strong> — कोऑर्डिनेटेड सेट<br><br>कोणत्या कलेक्शनबद्दल अधिक जाणून घ्यायचं आहे?`,
+          followUp: 'collections'
+        },
+        {
+          keywords: ['ड्रेस मटेरियल', 'ड्रेस', 'सूट', 'dress material', 'unstitched'],
+          response: `👗 <strong>ड्रेस मटेरियल</strong> — कॉटन, सिल्क, लिनन, जॉर्जेट, चंदेरी आणि बरंच काही.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला ड्रेस मटेरियल हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['ब्लाउज मटेरियल', 'ब्लाउज कापड', 'blouse material'],
+          response: `👚 प्रीमियम <strong>ब्लाउज मटेरियल</strong> — सिल्क, ब्रोकेड, रॉ सिल्क, कॉटन, फॅन्सी प्रिंट्स.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला ब्लाउज मटेरियल हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['रेडीमेड ब्लाउज', 'शिवलेलं', 'readymade', 'ready made blouse'],
+          response: `✨ <strong>रेडीमेड ब्लाउज</strong> — पारंपरिक, पार्टी आणि रोजच्या वापरासाठी.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला रेडीमेड ब्लाउज हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कापड', 'फॅब्रिक', 'fabric', 'kapda', 'cloth'],
+          response: `🧵 सर्व प्रकारचे <strong>कापड</strong> उपलब्ध आहे — शिवणकाम, क्रिएटिव्ह प्रोजेक्ट्स, सगळ्यासाठी.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला कापड हवं आहे" target="_blank" rel="noopener">WhatsApp वर सांगा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['लेगिंग', 'legging', 'leggings'],
+          response: `🩳 आरामदायी आणि स्टायलिश <strong>लेगिंग्स</strong> अनेक रंगांत.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला लेगिंग्स हव्या आहेत" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['पेटीकोट', 'petticoat'],
+          response: `<strong>साडी पेटीकोट</strong> — कॉटन, सिल्क, सॅटिन — इलॅस्टिक आणि शिवलेलं दोन्ही.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला साडी पेटीकोट हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['शेपवेयर', 'shapewear'],
+          response: `<strong>साडी शेपवेयर</strong> — पूर्ण दिवस आरामात साडी नेसा.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला साडी शेपवेयर हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['दुपट्टा', 'चुन्नी', 'dupatta'],
+          response: `🧣 सुंदर <strong>दुपट्टे</strong> — बनारसी, कलमकारी, शिफॉन, जॉर्जेट, नेट, ऑर्गेंज़ा.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला दुपट्टा हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['कट पीस', 'cutpiece', 'cut piece'],
+          response: `✂️ उत्तम <strong>कट पीस</strong> — वेगवेगळ्या साइज, टेक्सचर आणि पॅटर्न.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला कट पीस हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['मॅचिंग', 'कोऑर्डिनेटेड', 'सेट', 'matching'],
+          response: `🎨 <strong>मॅचिंग मटेरियल</strong> — पूर्णपणे कोऑर्डिनेटेड फॅब्रिक सेट.<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला मॅचिंग मटेरियल हवं आहे" target="_blank" rel="noopener">WhatsApp वर विचारा →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['किंमत', 'दर', 'रेट', 'किती', 'price', 'cost', 'rate', 'charge'],
+          response: `💰 किंमत कापडाचा प्रकार, गुणवत्ता आणि प्रमाणावर अवलंबून आहे.<br><br>नेमकी किंमत जाणून घ्या:<br><a href="${WHATSAPP_LINK}?text=नमस्कार, किंमत जाणून घ्यायची आहे" target="_blank" rel="noopener">📱 WhatsApp वर विचारा →</a><br>किंवा कॉल करा: <a href="${PHONE_LINK}">${PHONE}</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['ऑर्डर', 'बुक', 'खरेदी', 'घ्यायचं', 'डिलिव्हरी', 'order', 'book', 'buy', 'delivery'],
+          response: `🛒 ऑर्डर देण्यासाठी थेट WhatsApp वर संपर्क करा. आमची टीम तुम्हाला मदत करेल!<br><br><a href="${WHATSAPP_LINK}?text=नमस्कार, मला ऑर्डर करायचं आहे" target="_blank" rel="noopener">📱 <strong>WhatsApp: ${PHONE}</strong> →</a>`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['पेमेंट', 'भरणा', 'upi', 'कॅश', 'payment', 'cash', 'gpay', 'paytm', 'pay'],
+          response: `💳 आम्ही <strong>कॅश</strong> आणि <strong>UPI</strong> पेमेंट स्वीकारतो.`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['इतिहास', 'कधीपासून', 'जुनं', 'स्थापना', 'बद्दल', 'history', 'since', 'about', 'heritage'],
+          response: `🏛️ <strong>संजय कट पीस</strong> 1977 पासून ठाण्यात सेवा देत आहे — 47+ वर्षांचा विश्वास, गुणवत्ता आणि पारंपरिक मूल्ये.`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['धन्यवाद', 'आभार', 'thank', 'thanks', 'tq'],
+          response: `आपले स्वागत आहे! 🙏 काही अजून विचारायचं असेल तर मोकळेपणाने विचारा.<br><br><a href="${WHATSAPP_LINK}" target="_blank" rel="noopener">WhatsApp</a> वरही संपर्क करू शकता.`,
+          followUp: 'main'
+        },
+        {
+          keywords: ['बाय', 'निरोप', 'bye', 'goodbye'],
+          response: `निरोप! 🙏 चॅट केल्याबद्दल धन्यवाद. जांभळी नाका, ठाणे पश्चिम मध्ये कधीही या. शुभ दिन!`,
+          followUp: null
+        },
+      ]
+    }
   };
-
-  const DEFAULT_RESPONSE = `I'm not sure I understood that. You can ask me about our store timings, location, collections, or pricing.<br><br>For more detailed inquiries, please message us directly on WhatsApp:<br><a href="${WHATSAPP_LINK}?text=Hi, I need help with..." target="_blank" rel="noopener">📱 <strong>WhatsApp: ${PHONE}</strong> →</a>`;
 
   // ---- DOM Elements ----
   const toggle = document.getElementById('chatbot-toggle');
@@ -626,6 +914,7 @@ import business from '../data/business.json';
   const quickRepliesEl = document.getElementById('chatbot-quick-replies');
   const inputEl = document.getElementById('chatbot-input');
   const sendBtn = document.getElementById('chatbot-send');
+  const headerStatusEl = document.querySelector('.chatbot__header-status');
 
   let isOpen = false;
   let hasGreeted = false;
@@ -642,9 +931,10 @@ import business from '../data/business.json';
 
     if (!hasGreeted) {
       hasGreeted = true;
+      // Show language selection first
       showTypingThenReply(
-        `Namaste! 🙏 Welcome to <strong>Sanjay Cut Piece</strong>.<br>I can help you with store info, collections, pricing & more.<br><br>How can I assist you today?`,
-        'main'
+        `🙏 Welcome to <strong>Sanjay Cut Piece</strong>!<br><br>Please select your preferred language:<br>कृपया अपनी भाषा चुनें:<br>कृपया तुमची भाषा निवडा:`,
+        'langSelect'
       );
     }
 
@@ -695,7 +985,7 @@ import business from '../data/business.json';
     setTimeout(() => {
       removeTyping();
       addMessage(text, 'bot');
-      if (quickReplyMenu && QUICK_REPLIES[quickReplyMenu]) {
+      if (quickReplyMenu) {
         renderQuickReplies(quickReplyMenu);
       }
     }, delay);
@@ -704,7 +994,28 @@ import business from '../data/business.json';
   // ---- Quick Replies ----
   function renderQuickReplies(menuKey) {
     quickRepliesEl.innerHTML = '';
-    const items = QUICK_REPLIES[menuKey] || [];
+
+    // Special: language selection menu
+    if (menuKey === 'langSelect') {
+      const langOptions = [
+        { label: '🇬🇧 English', lang: 'en' },
+        { label: '🇮🇳 हिन्दी', lang: 'hi' },
+        { label: '🇮🇳 मराठी', lang: 'mr' },
+      ];
+      langOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'chatbot-qr';
+        btn.textContent = opt.label;
+        btn.addEventListener('click', () => selectLanguage(opt.lang));
+        quickRepliesEl.appendChild(btn);
+      });
+      return;
+    }
+
+    // Normal quick replies from current language
+    if (!currentLang) return;
+    const langData = LANG_DATA[currentLang];
+    const items = (langData.quickReplies && langData.quickReplies[menuKey]) || [];
     items.forEach(item => {
       const btn = document.createElement('button');
       btn.className = 'chatbot-qr';
@@ -716,17 +1027,61 @@ import business from '../data/business.json';
     });
   }
 
+  // ---- Language Selection ----
+  function selectLanguage(lang) {
+    currentLang = lang;
+    const langData = LANG_DATA[lang];
+
+    // Show user's selection
+    addMessage(langData.name, 'user');
+    quickRepliesEl.innerHTML = '';
+
+    // Update placeholder and header status
+    inputEl.placeholder = langData.inputPlaceholder;
+    if (headerStatusEl) {
+      // Keep the status dot, update text
+      const dot = headerStatusEl.querySelector('.chatbot__status-dot');
+      headerStatusEl.textContent = '';
+      if (dot) headerStatusEl.appendChild(dot);
+      headerStatusEl.appendChild(document.createTextNode(' ' + langData.headerStatus));
+    }
+
+    // Greet in chosen language
+    showTypingThenReply(langData.greetAfterLang, 'main');
+  }
+
   // ---- Message Processing ----
   function findResponse(input) {
+    if (!currentLang) {
+      // If language not yet selected, check for language hints
+      const lower = input.toLowerCase().trim();
+      if (lower.includes('english') || lower.includes('eng')) {
+        return { action: 'selectLang', lang: 'en' };
+      }
+      if (lower.includes('hindi') || lower.includes('हिन्दी') || lower.includes('हिंदी')) {
+        return { action: 'selectLang', lang: 'hi' };
+      }
+      if (lower.includes('marathi') || lower.includes('मराठी')) {
+        return { action: 'selectLang', lang: 'mr' };
+      }
+      return {
+        action: 'reply',
+        response: `Please select a language first / कृपया पहले भाषा चुनें:`,
+        followUp: 'langSelect'
+      };
+    }
+
+    const langData = LANG_DATA[currentLang];
     const lower = input.toLowerCase().trim();
-    for (const rule of FAQ_RULES) {
+
+    for (const rule of langData.faq) {
       for (const kw of rule.keywords) {
         if (lower.includes(kw)) {
-          return { response: rule.response, followUp: rule.followUp };
+          return { action: 'reply', response: rule.response, followUp: rule.followUp };
         }
       }
     }
-    return { response: DEFAULT_RESPONSE, followUp: 'main' };
+    return { action: 'reply', response: langData.defaultResponse, followUp: 'main' };
   }
 
   function handleUserMessage(text) {
@@ -735,8 +1090,13 @@ import business from '../data/business.json';
     quickRepliesEl.innerHTML = '';
     inputEl.value = '';
 
-    const { response, followUp } = findResponse(text);
-    showTypingThenReply(response, followUp);
+    const result = findResponse(text);
+
+    if (result.action === 'selectLang') {
+      selectLanguage(result.lang);
+    } else {
+      showTypingThenReply(result.response, result.followUp);
+    }
   }
 
   // ---- Input Events ----
@@ -758,3 +1118,4 @@ import business from '../data/business.json';
     }
   });
 </script>
+
