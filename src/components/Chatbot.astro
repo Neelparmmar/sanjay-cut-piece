@@ -63,10 +63,8 @@ import business from '../data/business.json';
     <!-- Messages will be injected here -->
   </div>
 
-  <!-- Quick Replies -->
-  <div class="chatbot__quick-replies" id="chatbot-quick-replies">
-    <!-- Quick reply buttons injected here -->
-  </div>
+  <!-- Quick Replies (rendered inline in messages) -->
+  <div class="chatbot__quick-replies" id="chatbot-quick-replies" style="display:none;"></div>
 
   <!-- Input -->
   <div class="chatbot__input-area">
@@ -377,52 +375,55 @@ import business from '../data/business.json';
     30% { transform: translateY(-6px); opacity: 1; }
   }
 
-  /* ---- QUICK REPLIES ---- */
+  /* ---- QUICK REPLIES (inline in chat) ---- */
   .chatbot__quick-replies {
-    padding: 6px 16px 10px;
+    display: none !important;
+  }
+
+  :global(.chatbot-qr-wrap) {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    background: var(--white);
-    border-top: 1px solid var(--cream-300);
-    flex-shrink: 0;
-  }
-
-  .chatbot__quick-replies:empty {
-    display: none;
-    padding: 0;
-    border: none;
+    padding: 4px 0;
+    animation: msg-in 0.35s cubic-bezier(.4,0,.2,1);
   }
 
   :global(.chatbot-qr) {
-    padding: 7px 14px;
-    border-radius: 20px;
-    border: 1.5px solid var(--burgundy-700);
-    background: transparent;
-    color: var(--burgundy-700);
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--cream-200);
+    color: var(--burgundy-800);
     font-family: 'Inter', sans-serif;
-    font-size: 12px;
+    font-size: 12.5px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
   }
 
   :global(.chatbot-qr:hover) {
     background: var(--burgundy-700);
     color: var(--white);
+    box-shadow: 0 2px 8px rgba(74, 14, 28, 0.25);
     transform: translateY(-1px);
   }
 
+  :global(.chatbot-qr:active) {
+    transform: translateY(0) scale(0.97);
+  }
+
   :global(.chatbot-qr--back) {
-    border-color: var(--brown-400);
+    background: var(--white);
     color: var(--brown-600);
-    background: var(--cream-100);
+    border: 1px solid var(--cream-300);
   }
 
   :global(.chatbot-qr--back:hover) {
     background: var(--brown-600);
     color: var(--white);
+    border-color: var(--brown-600);
   }
 
   :global(.chatbot-history-divider) {
@@ -1186,6 +1187,7 @@ import business from '../data/business.json';
   }
 
   // ---- Quick Replies ----
+  // ---- Quick Replies (inline in messages) ----
   function renderQuickReplies(menuKey, pushToStack = true) {
     if (pushToStack && currentMenuKey && currentMenuKey !== menuKey) {
       menuStack.push(currentMenuKey);
@@ -1196,7 +1198,12 @@ import business from '../data/business.json';
     } catch (e) {}
     updateNavButtons();
 
-    quickRepliesEl.innerHTML = '';
+    // Remove any previous inline quick-reply buttons
+    const oldWraps = messagesEl.querySelectorAll('.chatbot-qr-wrap');
+    oldWraps.forEach(el => el.remove());
+
+    const wrap = document.createElement('div');
+    wrap.className = 'chatbot-qr-wrap';
 
     // Special: language selection menu
     if (menuKey === 'langSelect') {
@@ -1210,8 +1217,10 @@ import business from '../data/business.json';
         btn.className = 'chatbot-qr';
         btn.textContent = opt.label;
         btn.addEventListener('click', () => selectLanguage(opt.lang));
-        quickRepliesEl.appendChild(btn);
+        wrap.appendChild(btn);
       });
+      messagesEl.appendChild(wrap);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
       return;
     }
 
@@ -1232,8 +1241,10 @@ import business from '../data/business.json';
           handleUserMessage(item.message);
         }
       });
-      quickRepliesEl.appendChild(btn);
+      wrap.appendChild(btn);
     });
+    messagesEl.appendChild(wrap);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
   function applyLanguageUI(lang) {
@@ -1259,7 +1270,9 @@ import business from '../data/business.json';
 
     // Show user's selection
     addMessage(langData.name, 'user');
-    quickRepliesEl.innerHTML = '';
+    // Remove old inline quick replies
+    const oldWraps = messagesEl.querySelectorAll('.chatbot-qr-wrap');
+    oldWraps.forEach(el => el.remove());
 
     applyLanguageUI(lang);
     menuStack = [];
@@ -1304,7 +1317,9 @@ import business from '../data/business.json';
   function handleUserMessage(text) {
     if (!text.trim()) return;
     addMessage(text, 'user');
-    quickRepliesEl.innerHTML = '';
+    // Remove old inline quick replies
+    const oldWraps = messagesEl.querySelectorAll('.chatbot-qr-wrap');
+    oldWraps.forEach(el => el.remove());
     inputEl.value = '';
 
     const result = findResponse(text);
