@@ -38,6 +38,10 @@
   "mapsLink": "https://maps.app.goo.gl/XTzatKnhju5wWqSg6",
   "mapEmbedUrl": "https://maps.google.com/maps?q=19.1934544,72.9775329&hl=en&z=17&output=embed",
   "directionsLink": "https://www.google.com/maps/dir/?api=1&destination=Sanjay+Matching+Centre+Thane+West",
+  "googlePlaceId": "ChIJoXx2Iie55zsRwmoITWfwPEc",
+  "googleCid": "5133242001760217794",
+  "googleReviewLink": "https://search.google.com/local/writereview?placeid=ChIJoXx2Iie55zsRwmoITWfwPEc",
+  "googleReviewsViewLink": "https://maps.google.com/?cid=5133242001760217794",
   "collections": [
     {
       "id": "dress-materials",

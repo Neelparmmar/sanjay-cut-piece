@@ -1,4 +1,6 @@
 ---
+import business from '../data/business.json';
+import { getLocalizedReviews } from '../data/staticReviews';
 import type { Language } from '../i18n/types';
 import { getLanguageFromPath, getTranslations } from '../i18n/utils';
 
@@ -8,9 +10,47 @@ interface Props {
 
 const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
 const t = getTranslations(lang);
+const initialReviews = getLocalizedReviews(lang);
+
+const writeReviewLink = business.googleReviewLink || `https://search.google.com/local/writereview?placeid=${business.googlePlaceId}`;
+const viewReviewsLink = business.googleReviewsViewLink || business.mapsLink || `https://maps.google.com/?cid=${business.googleCid}`;
+
+// Multilingual helper texts
+const i18nTexts = {
+  en: {
+    writeReview: 'Write a Review',
+    basedOn: 'Google Rating based on 28+ reviews',
+    verified: 'Verified Google Review',
+    readMore: 'Read more',
+    readLess: 'Read less'
+  },
+  hi: {
+    writeReview: 'समीक्षा लिखें',
+    basedOn: '28+ समीक्षाओं के आधार पर गूगल रेटिंग',
+    verified: 'सत्यापित गूगल समीक्षा',
+    readMore: 'और पढ़ें',
+    readLess: 'कम पढ़ें'
+  },
+  mr: {
+    writeReview: 'समीक्षा लिहा',
+    basedOn: '28+ पुनरावलोकनांवर आधारित गूगल रेटिंग',
+    verified: 'पडताळणी केलेली गूगल समीक्षा',
+    readMore: 'अधिक वाचा',
+    readLess: 'कमी वाचा'
+  },
+  gu: {
+    writeReview: 'સમીક્ષા લખો',
+    basedOn: '28+ સમીક્ષાઓ પર આધારિત ગૂગલ રેટિંગ',
+    verified: 'ચકાસાયેલ ગૂગલ સમીક્ષા',
+    readMore: 'વધુ વાંચો',
+    readLess: 'ઓછું વાંચો'
+  }
+};
+
+const labels = i18nTexts[lang] || i18nTexts.en;
 ---
 
-<section class="reviews section--compact" id="reviews">
+<section class="reviews section--compact" id="reviews" data-lang={lang}>
   <div class="container">
     <div class="section-heading reveal">
       <span class="section-heading__label">{t.reviews.label}</span>
@@ -22,49 +62,402 @@ const t = getTranslations(lang);
       </div>
     </div>
 
-    <div class="reviews__placeholder reveal">
-      <div class="reviews__placeholder-icon">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
+    <!-- Reviews Wrapper: Statically Rendered -->
+    <div class="reviews__wrapper reveal">
+      <div id="reviews-active" class="reviews__active">
+        <!-- Header Bar with Google Summary -->
+        <div class="reviews__summary-bar">
+          <div class="reviews__summary-left">
+            <div class="reviews__google-logo" title="Google Reviews">
+              <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+              </svg>
+            </div>
+            <div class="reviews__summary-rating">
+              <span id="reviews-avg-rating" class="reviews__avg-score">4.8</span>
+              <div class="reviews__stars reviews__stars--gold" aria-label="4.8 stars out of 5">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <span id="reviews-summary-text" class="reviews__summary-caption">{labels.basedOn}</span>
+            </div>
+          </div>
+
+          <div class="reviews__summary-right">
+            <div class="reviews__verified-pill" title={labels.verified}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <span>{labels.verified}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- The 5 Review Cards Grid (Statically Rendered) -->
+        <div id="reviews-grid" class="reviews__grid" aria-live="polite">
+          {initialReviews.map((review, idx) => (
+            <article class={`reviews__card reviews__card--item-${idx + 1} reveal-item`}>
+              <div class="reviews__card-header">
+                <div class="reviews__avatar">
+                  <img
+                    src={review.profilePhotoUrl}
+                    alt={review.authorName}
+                    class="reviews__avatar-img"
+                    loading="lazy"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                  />
+                  <div class="reviews__avatar-initials" style="display:none;">
+                    {review.authorName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                  </div>
+                </div>
+                <div class="reviews__card-author-info">
+                  <h3 class="reviews__author-name">{review.authorName}</h3>
+                  <div class="reviews__card-meta">
+                    <span class="reviews__verified-badge" title={labels.verified}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                      </svg>
+                      <span>{labels.verified}</span>
+                    </span>
+                    <span class="reviews__date">• {review.relativeTimeDescription}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="reviews__card-stars" aria-label={`${review.rating} out of 5 stars`}>
+                <span class="star-filled">★</span>
+                <span class="star-filled">★</span>
+                <span class="star-filled">★</span>
+                <span class="star-filled">★</span>
+                <span class="star-filled">★</span>
+              </div>
+              <div class="reviews__card-body">
+                <p class="reviews__card-text">{review.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- Footer Navigation & Actions -->
+        <div class="reviews__footer">
+          <div class="reviews__actions">
+            <a
+              id="reviews-view-all"
+              href={viewReviewsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn--secondary btn--sm"
+            >
+              {t.reviews.btnText}
+            </a>
+            <a
+              id="reviews-write"
+              href={writeReviewLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn--primary btn--sm"
+            >
+              {labels.writeReview}
+            </a>
+          </div>
+        </div>
       </div>
-      <p class="reviews__placeholder-text" set:html={t.reviews.text.replace('\n', '<br/>')} />
-      <a
-        href="https://search.google.com/local/reviews?placeid=ChIJXXXXXXXXXX"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn btn--secondary btn--sm"
-        style="margin-top: var(--space-lg);"
-      >
-        {t.reviews.btnText}
-      </a>
     </div>
   </div>
 </section>
 
+<!-- Client Hydration & Live Sync (Optional Fallback Enhancement) -->
+<script is:inline define:vars={{ labels, initialReviews }}>
+  (function syncReviews() {
+    const avgRatingEl = document.getElementById('reviews-avg-rating');
+
+    fetch('/api/reviews.json')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success && data.rating && avgRatingEl) {
+          avgRatingEl.textContent = Number(data.rating).toFixed(1);
+        }
+      })
+      .catch(err => {
+        // Silently preserve the 5 statically rendered reviews
+        console.debug('Using pre-rendered static reviews:', err);
+      });
+  })();
+</script>
+
 <style>
   .reviews {
     background: var(--cream-100);
+    position: relative;
+    padding: var(--space-3xl) 0;
   }
 
-  .reviews__placeholder {
-    text-align: center;
-    padding: var(--space-3xl) var(--space-xl);
-    border: 2px dashed var(--cream-400);
-    border-radius: var(--radius-xl);
-    max-width: 600px;
+  .reviews__wrapper {
+    max-width: 1120px;
     margin: 0 auto;
   }
 
-  .reviews__placeholder-icon {
-    color: var(--gold-500);
-    margin-bottom: var(--space-lg);
+  /* Summary Header Bar */
+  .reviews__summary-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--white);
+    border: 1px solid var(--cream-300);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
   }
 
-  .reviews__placeholder-text {
+  .reviews__summary-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .reviews__google-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--cream-100);
+    border-radius: 50%;
+  }
+
+  .reviews__summary-rating {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  .reviews__avg-score {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--burgundy-900);
+    line-height: 1;
+  }
+
+  .reviews__stars {
+    display: inline-flex;
+    color: #F4B400;
+    font-size: 1.125rem;
+    letter-spacing: 2px;
+  }
+
+  .reviews__summary-caption {
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 0.875rem;
     color: var(--brown-600);
-    line-height: 1.7;
+    margin-left: var(--space-xs);
+  }
+
+  .reviews__verified-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--burgundy-800);
+    background: var(--cream-200);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--cream-300);
+  }
+
+  /* Exactly 5 Reviews Balanced Grid Layout */
+  .reviews__grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: var(--space-lg);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* 3 cards on row 1, 2 centered cards on row 2 on desktop */
+  @media (min-width: 1024px) {
+    .reviews__card--item-1,
+    .reviews__card--item-2,
+    .reviews__card--item-3 {
+      grid-column: span 2;
+    }
+    .reviews__card--item-4 {
+      grid-column: 2 / span 2;
+    }
+    .reviews__card--item-5 {
+      grid-column: 4 / span 2;
+    }
+  }
+
+  /* 2 columns on tablet */
+  @media (max-width: 1023px) and (min-width: 680px) {
+    .reviews__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .reviews__card--item-1,
+    .reviews__card--item-2,
+    .reviews__card--item-3,
+    .reviews__card--item-4 {
+      grid-column: span 1;
+    }
+    .reviews__card--item-5 {
+      grid-column: 1 / span 2;
+      max-width: 520px;
+      margin: 0 auto;
+      width: 100%;
+    }
+  }
+
+  /* 1 column on mobile */
+  @media (max-width: 679px) {
+    .reviews__grid {
+      grid-template-columns: 1fr;
+    }
+    .reviews__card--item-1,
+    .reviews__card--item-2,
+    .reviews__card--item-3,
+    .reviews__card--item-4,
+    .reviews__card--item-5 {
+      grid-column: span 1;
+    }
+  }
+
+  /* Review Card */
+  .reviews__card {
+    background: var(--white);
+    border: 1px solid var(--cream-300);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+  }
+
+  .reviews__card:hover {
+    border-color: var(--gold-500);
+    box-shadow: var(--shadow-gold);
+    transform: translateY(-3px);
+  }
+
+  .reviews__card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-sm);
+  }
+
+  .reviews__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--cream-300);
+    background: var(--cream-200);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reviews__avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .reviews__avatar-initials {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--gold-400);
+    background: var(--burgundy-800);
+  }
+
+  .reviews__card-author-info {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .reviews__author-name {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--burgundy-900);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .reviews__card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-top: 3px;
+  }
+
+  .reviews__verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--brown-600);
+  }
+
+  .reviews__date {
+    font-size: 0.6875rem;
+    color: var(--brown-500);
+  }
+
+  .reviews__card-stars {
+    color: #F4B400;
+    font-size: 1.05rem;
+    letter-spacing: 2px;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+  }
+
+  .reviews__card-body {
+    flex: 1;
+  }
+
+  .reviews__card-text {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--brown-700);
+    line-height: 1.65;
+  }
+
+  /* Footer Controls & Actions */
+  .reviews__footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: var(--space-2xl);
+  }
+
+  .reviews__actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
   }
 </style>
