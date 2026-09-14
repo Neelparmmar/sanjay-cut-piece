@@ -1,0 +1,130 @@
+{
+  "name": "Sanjay Cut Piece",
+  "nameHindi": "संजय मॅचिंग सेंटर",
+  "nameSubtitle": "आणि कटपीस सेंटर",
+  "established": 1977,
+  "tagline": "Quality Fabrics. Traditional Values. Your Trust, Our Priority.",
+  "taglineHindi": "उत्तम दर्जाचे कपडे | पारंपरिक मुल्ये | आपला विश्वास, आमची प्राधान्य",
+  "secondaryTagline": "Traditional • Trendy • Timeless",
+  "phone": "9029614321",
+  "phoneFormatted": "+91 90296 14321",
+  "phoneLink": "tel:+919029614321",
+  "whatsappLink": "https://wa.me/919029614321",
+  "address": {
+    "line1": "Shop No. 2 & 3, Station Rd",
+    "line2": "Opp. Dream Arcade Bldg, near Jambli Naka",
+    "area": "Thane West",
+    "city": "Thane",
+    "state": "Maharashtra",
+    "pincode": "400601",
+    "country": "IN",
+    "full": "Shop No. 2 & 3, Station Rd, Opp. Dream Arcade Bldg, near Jambli Naka, Thane West, Thane, Maharashtra 400601"
+  },
+  "hours": {
+    "display": "10:00 AM – 9:30 PM",
+    "days": "Monday – Sunday",
+    "opens": "10:00",
+    "closes": "21:30",
+    "daysOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  },
+  "mapsLink": "https://maps.app.goo.gl/XTzatKnhju5wWqSg6",
+  "directionsLink": "https://www.google.com/maps/dir/?api=1&destination=Sanjay+Matching+Centre+Thane+West",
+  "collections": [
+    {
+      "id": "dress-materials",
+      "name": "Dress Materials",
+      "description": "Exquisite unstitched dress materials in cotton, silk, linen, georgette, chanderi and more.",
+      "image": "/images/dress-materials.png",
+      "alt": "Dress material collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "blouse-materials",
+      "name": "Blouse Materials",
+      "description": "Premium blouse fabrics in silk, brocade, raw silk, cotton, fancy prints and more.",
+      "image": "/images/blouse-materials.png",
+      "alt": "Blouse material collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "ready-made-blouses",
+      "name": "Ready Made Blouses",
+      "description": "Beautifully crafted ready-to-wear blouses for traditional, party wear and everyday occasions.",
+      "image": "/images/ready-made-blouses.png",
+      "alt": "Ready made blouse collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "fabrics",
+      "name": "Fabrics",
+      "description": "A wide selection of quality fabrics for all your creative needs and custom tailoring.",
+      "image": "/images/fabrics.png",
+      "alt": "Fabric collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "leggings",
+      "name": "Leggings",
+      "description": "Comfortable, stylish leggings in a variety of colours for everyday wear.",
+      "image": "/images/leggings.png",
+      "alt": "Leggings collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "saree-petticoats",
+      "name": "Saree Petticoats",
+      "description": "Quality saree petticoats in cotton, silk, satin — elastic and stitched options available.",
+      "image": "/images/saree-petticoats.png",
+      "alt": "Saree petticoat collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "saree-shapewear",
+      "name": "Saree Shapewear",
+      "description": "Smooth, comfortable shapewear for a perfect fit and all-day ease with your saree.",
+      "image": "/images/saree-shapewear.png",
+      "alt": "Saree shapewear collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "dupattas",
+      "name": "Dupattas",
+      "description": "Elegant dupattas in Banarasi, Kalamkari, chiffon, georgette, net, organza and more.",
+      "image": "/images/dupattas.png",
+      "alt": "Dupatta collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "cut-pieces",
+      "name": "Cut Pieces",
+      "description": "Quality fabric cut pieces in various sizes, textures and patterns for your projects.",
+      "image": "/images/cut-pieces.png",
+      "alt": "Cut piece fabric collection at Sanjay Cut Piece, Thane"
+    },
+    {
+      "id": "matching-materials",
+      "name": "Matching Materials",
+      "description": "Perfectly coordinated matching fabric sets for a complete, harmonious look.",
+      "image": "/images/matching-materials.png",
+      "alt": "Matching material sets at Sanjay Cut Piece, Thane"
+    }
+  ],
+  "whyChooseUs": [
+    {
+      "title": "Quality Fabrics",
+      "description": "Carefully curated collection of premium quality fabrics from trusted sources."
+    },
+    {
+      "title": "Wide Collection",
+      "description": "From dress materials to dupattas — everything you need under one roof."
+    },
+    {
+      "title": "Since 1977",
+      "description": "Over four decades of serving Thane with dedication and trust."
+    },
+    {
+      "title": "Expert Guidance",
+      "description": "Personal attention and expert advice to help you find the perfect fabric."
+    },
+    {
+      "title": "Trusted Locally",
+      "description": "A trusted name in Thane for generations of families."
+    },
+    {
+      "title": "Traditional Values",
+      "description": "Built on honesty, quality and customer satisfaction since day one."
+    }
+  ]
+}

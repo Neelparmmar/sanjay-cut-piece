@@ -1,0 +1,152 @@
+---
+import business from '../data/business.json';
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getLocalizedPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<section class="about section" id="about">
+  <div class="container">
+    <div class="about__grid">
+      <div class="about__image reveal reveal--left">
+        <div class="about__image-wrapper hover-zoom">
+          <img
+            src="/images/featured-fabrics.png"
+            alt="Interior of Sanjay Cut Piece fabric store in Thane"
+            loading="lazy"
+            width="580"
+            height="580"
+          />
+        </div>
+        <div class="about__image-badge">
+          <span class="about__image-badge-number">{t.about.badgeNumber}</span>
+          <span class="about__image-badge-text" set:html={t.about.badgeText.replace(' ', '<br/>')} />
+        </div>
+      </div>
+
+      <div class="about__content reveal reveal--right">
+        <span class="label label--gold">{t.about.label}</span>
+        <h2 class="heading-2" style="color: var(--burgundy-900); margin-top: var(--space-sm); margin-bottom: var(--space-lg);">
+          {t.about.title}
+        </h2>
+
+        <div class="gold-line" style="margin-bottom: var(--space-lg);"></div>
+
+        <p class="text-body" style="margin-bottom: var(--space-md);">
+          {t.about.p1}
+        </p>
+        <p class="text-body" style="margin-bottom: var(--space-md);">
+          {t.about.p2}
+        </p>
+        <p class="text-body" style="margin-bottom: var(--space-xl);">
+          {t.about.p3}
+        </p>
+
+        <p class="text-hindi text-hindi--sm" style="color: var(--brown-600); margin-bottom: var(--space-xl);">
+          {business.taglineHindi}
+        </p>
+
+        <div class="about__actions">
+          <a href={getLocalizedPath('/#collections', lang)} class="btn btn--primary">{t.ctas.exploreCollections}</a>
+          <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+            {t.ctas.whatsappUs}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    background: var(--cream-100);
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3xl);
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .about__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4xl);
+    }
+  }
+
+  .about__image {
+    position: relative;
+  }
+
+  .about__image-wrapper {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .about__image-wrapper img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  .about__image-badge {
+    position: absolute;
+    bottom: -20px;
+    right: -10px;
+    background: var(--burgundy-700);
+    color: var(--white);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    border: 3px solid var(--gold-500);
+  }
+
+  .about__image-badge-number {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold-400);
+    line-height: 1;
+  }
+
+  .about__image-badge-text {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  .about__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+  }
+
+  @media (max-width: 640px) {
+    .about__image-badge {
+      bottom: -15px;
+      right: 15px;
+      padding: var(--space-md);
+    }
+
+    .about__image-badge-number {
+      font-size: 1.5rem;
+    }
+  }
+</style>

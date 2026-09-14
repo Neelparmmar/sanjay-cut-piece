@@ -1,0 +1,242 @@
+---
+import '../styles/typography.css';
+import '../styles/global.css';
+import '../styles/decorative.css';
+import '../styles/animations.css';
+import { domain } from '../data/seo';
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getCleanPath, getLocalizedPath, getLocalizedSeo } from '../i18n/utils';
+
+interface Props {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  canonical?: string;
+  ogImage?: string;
+  schemaType?: string;
+  breadcrumbs?: { name: string; item: string }[];
+  lang?: Language;
+}
+
+const rawPath = Astro.url.pathname;
+const detectedLang = getLanguageFromPath(rawPath);
+
+const {
+  lang = detectedLang,
+  ogImage = '/images/hero-background.png',
+  schemaType,
+} = Astro.props;
+
+const cleanPath = getCleanPath(rawPath);
+const pageSeo = getLocalizedSeo(cleanPath, lang);
+
+const title = Astro.props.title || pageSeo.title;
+const description = Astro.props.description || pageSeo.description;
+const keywords = Astro.props.keywords || [pageSeo.primaryKeyword, ...pageSeo.secondaryKeywords];
+const breadcrumbs = Astro.props.breadcrumbs || pageSeo.breadcrumbs;
+const effectiveSchemaType = schemaType || pageSeo.schemaType;
+
+const currentLocalizedRelative = getLocalizedPath(cleanPath, lang);
+const canonical = Astro.props.canonical || `${domain}${currentLocalizedRelative}`;
+const canonicalURL = new URL(canonical);
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${domain}${ogImage}`;
+
+const localeMap: Record<Language, string> = {
+  en: 'en_IN',
+  hi: 'hi_IN',
+  mr: 'mr_IN',
+  gu: 'gu_IN',
+};
+
+const hrefEn = `${domain}${getLocalizedPath(cleanPath, 'en')}`;
+const hrefHi = `${domain}${getLocalizedPath(cleanPath, 'hi')}`;
+const hrefMr = `${domain}${getLocalizedPath(cleanPath, 'mr')}`;
+const hrefGu = `${domain}${getLocalizedPath(cleanPath, 'gu')}`;
+const hrefDefault = `${domain}${getLocalizedPath(cleanPath, 'en')}`;
+
+const schemaGraph: any[] = [
+  {
+    "@type": "WebSite",
+    "@id": `${domain}/#website`,
+    "url": domain,
+    "name": "Sanjay Cut Piece",
+    "description": "Quality Fabrics, Dress Materials & Cut Pieces Shop in Thane West since 1977.",
+    "publisher": {
+      "@id": `${domain}/#organization`
+    }
+  },
+  {
+    "@type": "ClothingStore",
+    "@id": `${domain}/#organization`,
+    "name": "Sanjay Cut Piece",
+    "alternateName": ["संजय मॅचिंग सेंटर आणि कटपीस सेंटर", "Sanjay Cut Piece Centre"],
+    "url": domain,
+    "telephone": "+919029614321",
+    "foundingDate": "1977",
+    "image": `${domain}/images/hero-background.png`,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Shop No. 2 & 3, Station Rd, Opp. Dream Arcade Bldg, near Jambli Naka",
+      "addressLocality": "Thane West",
+      "addressRegion": "Maharashtra",
+      "postalCode": "400601",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "19.1860",
+      "longitude": "72.9759"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "10:00",
+      "closes": "21:30"
+    },
+    "hasMap": "https://maps.app.goo.gl/XTzatKnhju5wWqSg6",
+    "priceRange": "₹₹",
+    "currenciesAccepted": "INR",
+    "paymentAccepted": "Cash, UPI",
+    "areaServed": {
+      "@type": "City",
+      "name": "Thane"
+    }
+  }
+];
+
+if (breadcrumbs && breadcrumbs.length > 0) {
+  schemaGraph.push({
+    "@type": "BreadcrumbList",
+    "@id": `${canonicalURL.href}#breadcrumb`,
+    "itemListElement": breadcrumbs.map((crumb, idx) => ({
+      "@type": "ListItem",
+      "position": idx + 1,
+      "name": crumb.name,
+      "item": crumb.item.startsWith('http') ? crumb.item : `${domain}${crumb.item}`
+    }))
+  });
+}
+
+if (effectiveSchemaType === 'Product' && cleanPath !== '/') {
+  schemaGraph.push({
+    "@type": "Product",
+    "@id": `${canonicalURL.href}#product`,
+    "name": pageSeo.h1,
+    "description": description,
+    "category": pageSeo.h1,
+    "brand": {
+      "@type": "Brand",
+      "name": "Sanjay Cut Piece"
+    },
+    "offers": {
+      "@type": "AggregateOffer",
+      "priceCurrency": "INR",
+      "seller": {
+        "@id": `${domain}/#organization`
+      }
+    }
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  {keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+  <meta name="robots" content="index, follow" />
+
+  <!-- Preconnect to fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href={canonicalURL.href} />
+
+  <!-- Hreflang Alternate Links -->
+  <link rel="alternate" hreflang="en" href={hrefEn} />
+  <link rel="alternate" hreflang="hi" href={hrefHi} />
+  <link rel="alternate" hreflang="mr" href={hrefMr} />
+  <link rel="alternate" hreflang="gu" href={hrefGu} />
+  <link rel="alternate" hreflang="x-default" href={hrefDefault} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalURL.href} />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:locale" content={localeMap[lang]} />
+  <meta property="og:site_name" content="Sanjay Cut Piece" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
+
+  <!-- Geo Meta -->
+  <meta name="geo.region" content="IN-MH" />
+  <meta name="geo.placename" content="Thane" />
+
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#4A0E1C" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Schema.org Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": schemaGraph
+  })} />
+</head>
+<body>
+  <slot />
+
+  <!-- Scroll Reveal Script (Minimal vanilla JS) -->
+  <script>
+    // IntersectionObserver for scroll-reveal animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const href = this.getAttribute('href');
+        if (href) {
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+            // Close mobile menu if open
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && mobileMenu.classList.contains('active')) {
+              mobileMenu.classList.remove('active');
+              document.body.style.overflow = '';
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

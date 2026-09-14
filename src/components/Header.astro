@@ -1,0 +1,660 @@
+---
+import business from '../data/business.json';
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getLocalizedPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const currentPath = Astro.url.pathname;
+const detectedLang = getLanguageFromPath(currentPath);
+
+const { lang = detectedLang } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<header class="header" id="header">
+  <div class="header__inner container container--wide">
+    <!-- Logo -->
+    <a href={getLocalizedPath('/', lang)} class="header__logo" aria-label="Sanjay Cut Piece - Home">
+      <img
+        src="/images/SC_logo_round_HD_tight.png"
+        alt="Sanjay Cut Piece logo"
+        class="header__logo-img"
+        width="44"
+        height="44"
+      />
+      <div class="header__logo-text">
+        <span class="header__logo-name">Sanjay Cut Piece</span>
+        <span class="header__logo-since">{t.hero.since}</span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="header__nav desktop-only" aria-label="Main navigation">
+      <ul class="header__nav-list">
+        <li><a href={getLocalizedPath('/', lang)} class="header__nav-link">{t.nav.home}</a></li>
+        <li><a href={getLocalizedPath('/#about', lang)} class="header__nav-link">{t.nav.about}</a></li>
+        <li><a href={getLocalizedPath('/#collections', lang)} class="header__nav-link">{t.nav.collections}</a></li>
+        <li><a href={getLocalizedPath('/#why-us', lang)} class="header__nav-link">{t.nav.whyUs}</a></li>
+        <li><a href={getLocalizedPath('/#gallery', lang)} class="header__nav-link">{t.nav.gallery}</a></li>
+        <li><a href={getLocalizedPath('/#visit', lang)} class="header__nav-link">{t.nav.visitUs}</a></li>
+      </ul>
+    </nav>
+
+    <!-- Desktop Language Selector + CTA -->
+    <div class="header__right desktop-only">
+      <!-- Language Dropdown -->
+      <div class="header__lang-dropdown" id="lang-dropdown">
+        <button class="header__lang-btn" id="lang-btn" aria-expanded="false" aria-label="Select Language">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <span class="header__lang-code" id="lang-code-desktop">{t.langCodes[lang]}</span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="header__lang-chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="header__lang-menu" id="lang-menu" aria-hidden="true">
+          <a href={getLocalizedPath(currentPath, 'en')} class={`header__lang-opt ${lang === 'en' ? 'active' : ''}`} data-lang="en">English</a>
+          <a href={getLocalizedPath(currentPath, 'hi')} class={`header__lang-opt ${lang === 'hi' ? 'active' : ''}`} data-lang="hi">हिन्दी</a>
+          <a href={getLocalizedPath(currentPath, 'mr')} class={`header__lang-opt ${lang === 'mr' ? 'active' : ''}`} data-lang="mr">मराठी</a>
+          <a href={getLocalizedPath(currentPath, 'gu')} class={`header__lang-opt ${lang === 'gu' ? 'active' : ''}`} data-lang="gu">ગુજરાતી</a>
+        </div>
+      </div>
+
+      <!-- Existing CTAs -->
+      <div class="header__cta">
+        <a href={business.phoneLink} class="header__cta-btn header__cta-btn--call" aria-label="Call us">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span>{t.ctas.call}</span>
+        </a>
+        <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer" class="header__cta-btn header__cta-btn--whatsapp" aria-label="WhatsApp us">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <span>{t.ctas.whatsapp}</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile: Call + Menu -->
+    <div class="header__mobile-actions mobile-only">
+      <a href={business.phoneLink} class="header__mobile-call" aria-label="Call us">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+      </a>
+      <button class="header__hamburger" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+        <span class="header__hamburger-line"></span>
+        <span class="header__hamburger-line"></span>
+        <span class="header__hamburger-line"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Gold accent line -->
+  <div class="header__gold-line"></div>
+
+  <!-- Mobile Menu Drawer -->
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <div class="mobile-menu__overlay" id="mobile-menu-overlay"></div>
+    <div class="mobile-menu__drawer">
+      <div class="mobile-menu__header">
+        <div class="mobile-menu__brand">
+          <img src="/images/SC_logo_round_HD_tight.png" alt="Sanjay Cut Piece logo" class="mobile-menu__logo-img" width="36" height="36" />
+          <span style="font-family: var(--font-display); font-size: 1.125rem; color: var(--burgundy-900);">Sanjay Cut Piece</span>
+        </div>
+        <button class="mobile-menu__close" id="menu-close" aria-label="Close navigation menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <nav class="mobile-menu__nav" aria-label="Mobile navigation">
+        <a href={getLocalizedPath('/', lang)} class="mobile-menu__link">{t.nav.home}</a>
+        <a href={getLocalizedPath('/#about', lang)} class="mobile-menu__link">{t.nav.about}</a>
+        <a href={getLocalizedPath('/#collections', lang)} class="mobile-menu__link">{t.nav.collections}</a>
+        <a href={getLocalizedPath('/#why-us', lang)} class="mobile-menu__link">{t.nav.whyUs}</a>
+        <a href={getLocalizedPath('/#gallery', lang)} class="mobile-menu__link">{t.nav.gallery}</a>
+        <a href={getLocalizedPath('/#visit', lang)} class="mobile-menu__link">{t.nav.visitUs}</a>
+      </nav>
+
+      <!-- Mobile Language Selector -->
+      <div class="mobile-menu__lang">
+        <span class="mobile-menu__lang-title">Language / भाषा</span>
+        <div class="mobile-menu__lang-grid">
+          <a href={getLocalizedPath(currentPath, 'en')} class={`mobile-lang-opt ${lang === 'en' ? 'active' : ''}`} data-lang="en">English</a>
+          <a href={getLocalizedPath(currentPath, 'hi')} class={`mobile-lang-opt ${lang === 'hi' ? 'active' : ''}`} data-lang="hi">हिन्दी</a>
+          <a href={getLocalizedPath(currentPath, 'mr')} class={`mobile-lang-opt ${lang === 'mr' ? 'active' : ''}`} data-lang="mr">मराठी</a>
+          <a href={getLocalizedPath(currentPath, 'gu')} class={`mobile-lang-opt ${lang === 'gu' ? 'active' : ''}`} data-lang="gu">ગુજરાતી</a>
+        </div>
+      </div>
+      <div class="mobile-menu__cta">
+        <a href={business.phoneLink} class="btn btn--primary" style="width:100%;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          {t.ctas.callNow}
+        </a>
+        <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer" class="btn btn--gold" style="width:100%;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          {t.ctas.whatsappUs}
+        </a>
+      </div>
+      <div class="mobile-menu__info">
+        <p class="text-body-sm" style="color: var(--brown-600);">📍 {business.address.area}, {business.address.city}</p>
+        <p class="text-body-sm" style="color: var(--brown-600);">🕐 {business.hours.display} • {business.hours.days}</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 249, 240, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: box-shadow var(--transition-base);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    gap: var(--space-lg);
+  }
+
+  .header__gold-line {
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold-600), var(--gold-400), var(--gold-500), var(--gold-400), var(--gold-600));
+  }
+
+  /* Logo */
+  .header__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .header__logo-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header__logo-name {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--burgundy-900);
+    line-height: 1.2;
+  }
+
+  .header__logo-since {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-600);
+    line-height: 1;
+  }
+
+  /* Navigation */
+  .header__nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xl);
+  }
+
+  .header__nav-link {
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--brown-700);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: var(--space-xs) 0;
+    position: relative;
+    transition: color var(--transition-fast);
+  }
+
+  .header__nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold-500);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform var(--transition-base);
+  }
+
+  .header__nav-link:hover {
+    color: var(--burgundy-700);
+  }
+
+  .header__nav-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* Desktop CTA */
+  .header__cta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .header__cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all var(--transition-fast);
+  }
+
+  .header__cta-btn--call {
+    color: var(--burgundy-700);
+    border: 1.5px solid var(--burgundy-700);
+  }
+
+  .header__cta-btn--call:hover {
+    background: var(--burgundy-700);
+    color: var(--white);
+  }
+
+  .header__cta-btn--whatsapp {
+    background: #25D366;
+    color: white;
+    border: 1.5px solid #25D366;
+  }
+
+  .header__cta-btn--whatsapp:hover {
+    background: #1da851;
+    border-color: #1da851;
+  }
+
+  /* Mobile Actions */
+  .header__mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .header__mobile-call {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--burgundy-700);
+    color: var(--white);
+  }
+
+  /* Hamburger */
+  .header__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+  }
+
+  .header__hamburger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--burgundy-900);
+    border-radius: 1px;
+    transition: all var(--transition-base);
+  }
+
+  /* Mobile Menu Drawer */
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .mobile-menu.active {
+    pointer-events: all;
+    visibility: visible;
+  }
+
+  .mobile-menu__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .mobile-menu.active .mobile-menu__overlay {
+    opacity: 1;
+  }
+
+  .mobile-menu__drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 85%;
+    max-width: 360px;
+    height: 100%;
+    background: var(--cream-100);
+    transform: translateX(100%);
+    transition: transform var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .mobile-menu.active .mobile-menu__drawer {
+    transform: translateX(0);
+  }
+
+  .mobile-menu__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--cream-300);
+  }
+
+  .mobile-menu__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .mobile-menu__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--brown-700);
+  }
+
+  .mobile-menu__nav {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-lg);
+  }
+
+  /* Header Right Group */
+  .header__right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  /* Logo Image */
+  .header__logo-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid var(--gold-500);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mobile-menu__logo-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold-500);
+  }
+
+  /* Language Dropdown (Desktop) */
+  .header__lang-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .header__lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--cream-200);
+    border: 1px solid var(--gold-400);
+    border-radius: var(--radius-md);
+    color: var(--burgundy-900);
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .header__lang-btn:hover,
+  .header__lang-btn.active {
+    background: var(--burgundy-900);
+    color: var(--gold-300);
+    border-color: var(--gold-500);
+  }
+
+  .header__lang-chevron {
+    transition: transform var(--transition-fast);
+  }
+
+  .header__lang-dropdown.open .header__lang-chevron {
+    transform: rotate(180deg);
+  }
+
+  .header__lang-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: var(--white);
+    border: 1px solid var(--gold-300);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    min-width: 120px;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all var(--transition-fast);
+    z-index: 1100;
+  }
+
+  .header__lang-dropdown.open .header__lang-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .header__lang-opt {
+    text-decoration: none;
+    padding: 8px 12px;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--brown-800);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast), color var(--transition-fast);
+    display: block;
+  }
+
+  .header__lang-opt:hover,
+  .header__lang-opt.active {
+    background: var(--cream-200);
+    color: var(--burgundy-900);
+    font-weight: 600;
+  }
+
+  /* Mobile Language Selector Drawer */
+  .mobile-menu__lang {
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--cream-300);
+    border-bottom: 1px solid var(--cream-300);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .mobile-menu__lang-title {
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--brown-600);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .mobile-menu__lang-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xs);
+  }
+
+  .mobile-lang-opt {
+    text-decoration: none;
+    padding: 8px 12px;
+    background: var(--cream-100);
+    border: 1px solid var(--cream-300);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--brown-800);
+    cursor: pointer;
+    text-align: center;
+    transition: all var(--transition-fast);
+    display: block;
+  }
+
+  .mobile-lang-opt.active,
+  .mobile-lang-opt:hover {
+    background: var(--burgundy-900);
+    color: var(--gold-300);
+    border-color: var(--gold-500);
+    font-weight: 600;
+  }
+
+  .mobile-menu__link {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--burgundy-900);
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--cream-300);
+    transition: color var(--transition-fast);
+  }
+
+  .mobile-menu__link:hover {
+    color: var(--gold-600);
+  }
+
+  .mobile-menu__cta {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .mobile-menu__info {
+    padding: 0 var(--space-lg) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-top: auto;
+  }
+
+  @media (min-width: 768px) {
+    .header__logo-name {
+      font-size: 1.25rem;
+    }
+  }
+
+  @media (max-width: 1100px) and (min-width: 768px) {
+    .header__nav-list {
+      gap: var(--space-lg);
+    }
+    .header__nav-link {
+      font-size: 0.75rem;
+    }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuClose = document.getElementById('menu-close');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileOverlay = document.getElementById('mobile-menu-overlay');
+
+  function openMenu() {
+    mobileMenu?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    menuToggle?.setAttribute('aria-expanded', 'true');
+    mobileMenu?.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeMenu() {
+    mobileMenu?.classList.remove('active');
+    document.body.style.overflow = '';
+    menuToggle?.setAttribute('aria-expanded', 'false');
+    mobileMenu?.setAttribute('aria-hidden', 'true');
+  }
+
+  menuToggle?.addEventListener('click', openMenu);
+  menuClose?.addEventListener('click', closeMenu);
+  mobileOverlay?.addEventListener('click', closeMenu);
+
+  // Close menu on link click
+  document.querySelectorAll('.mobile-menu__link, .mobile-lang-opt').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  // Language selector script
+  const langDropdown = document.getElementById('lang-dropdown');
+  const langBtn = document.getElementById('lang-btn');
+  const langMenu = document.getElementById('lang-menu');
+
+  function toggleLangMenu(e: Event) {
+    e.stopPropagation();
+    const isOpen = langDropdown?.classList.contains('open');
+    if (isOpen) {
+      langDropdown?.classList.remove('open');
+      langBtn?.setAttribute('aria-expanded', 'false');
+      langMenu?.setAttribute('aria-hidden', 'true');
+    } else {
+      langDropdown?.classList.add('open');
+      langBtn?.setAttribute('aria-expanded', 'true');
+      langMenu?.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  langBtn?.addEventListener('click', toggleLangMenu);
+
+  document.addEventListener('click', (e) => {
+    if (langDropdown && !langDropdown.contains(e.target as Node)) {
+      langDropdown.classList.remove('open');
+      langBtn?.setAttribute('aria-expanded', 'false');
+      langMenu?.setAttribute('aria-hidden', 'true');
+    }
+  });
+</script>

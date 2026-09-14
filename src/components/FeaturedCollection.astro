@@ -1,0 +1,118 @@
+---
+import business from '../data/business.json';
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getLocalizedPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<section class="featured section--compact">
+  <div class="featured__inner">
+    <div class="featured__image">
+      <img
+        src="/images/fabrics.png"
+        alt="Wide collection of fabrics at Sanjay Cut Piece in Thane"
+        loading="lazy"
+        width="960"
+        height="600"
+      />
+      <div class="featured__image-overlay"></div>
+    </div>
+    <div class="featured__content container">
+      <div class="featured__text reveal">
+        <span class="label label--gold" style="margin-bottom: var(--space-sm); display: block;">{t.featured.label}</span>
+        <h2 class="heading-2" style="color: var(--white); margin-bottom: var(--space-md);">
+          {t.featured.title}
+        </h2>
+        <div class="gold-divider gold-divider--light" style="justify-content: flex-start; margin-bottom: var(--space-lg);">
+          <div class="gold-divider__line" style="margin-left: 0;"></div>
+          <span class="gold-divider__ornament">❖</span>
+          <div class="gold-divider__line"></div>
+        </div>
+        <p style="font-family: var(--font-body); font-size: 1.0625rem; color: rgba(255,255,255,0.85); line-height: 1.7; margin-bottom: var(--space-xl); max-width: 480px;">
+          {t.featured.description}
+        </p>
+        <div style="display: flex; gap: var(--space-md); flex-wrap: wrap;">
+          <a href={getLocalizedPath('/#visit', lang)} class="btn btn--gold">{t.ctas.visitStore}</a>
+          <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer" class="btn btn--ghost-white">
+            {t.ctas.whatsappUs}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured {
+    background: var(--burgundy-900);
+  }
+
+  .featured__inner {
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .featured__image {
+    position: absolute;
+    inset: 0;
+  }
+
+  .featured__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .featured__image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(74, 14, 28, 0.95) 0%,
+      rgba(74, 14, 28, 0.85) 40%,
+      rgba(74, 14, 28, 0.5) 70%,
+      rgba(74, 14, 28, 0.3) 100%
+    );
+  }
+
+  .featured__content {
+    position: relative;
+    z-index: 2;
+    padding: var(--space-4xl) var(--space-lg);
+  }
+
+  .featured__text {
+    max-width: 550px;
+  }
+
+  @media (max-width: 768px) {
+    .featured__inner {
+      min-height: 450px;
+    }
+
+    .featured__image-overlay {
+      background: linear-gradient(
+        0deg,
+        rgba(74, 14, 28, 0.95) 0%,
+        rgba(74, 14, 28, 0.8) 50%,
+        rgba(74, 14, 28, 0.5) 100%
+      );
+    }
+
+    .featured__content {
+      display: flex;
+      align-items: flex-end;
+      padding: var(--space-2xl) var(--space-md);
+    }
+  }
+</style>

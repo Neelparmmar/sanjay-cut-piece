@@ -1,0 +1,113 @@
+---
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+
+const galleryImages = [
+  { src: "/images/hero-background.png", alt: t.gallery.alts.hero, span: "tall" },
+  { src: "/images/dress-materials.png", alt: t.gallery.alts.dress, span: "" },
+  { src: "/images/ready-made-blouses.png", alt: t.gallery.alts.readymade, span: "" },
+  { src: "/images/dupattas.png", alt: t.gallery.alts.dupattas, span: "tall" },
+  { src: "/images/blouse-materials.png", alt: t.gallery.alts.blouse, span: "" },
+  { src: "/images/matching-materials.png", alt: t.gallery.alts.matching, span: "" },
+  { src: "/images/fabrics.png", alt: t.gallery.alts.fabrics, span: "wide" },
+  { src: "/images/cut-pieces.png", alt: t.gallery.alts.cutpieces, span: "" },
+];
+---
+
+<section class="gallery section" id="gallery">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="section-heading__label">{t.gallery.label}</span>
+      <h2 class="section-heading__title">{t.gallery.title}</h2>
+      <div class="gold-divider" style="margin-bottom: var(--space-md);">
+        <div class="gold-divider__line"></div>
+        <span class="gold-divider__ornament">❖</span>
+        <div class="gold-divider__line"></div>
+      </div>
+      <p class="section-heading__subtitle">
+        {t.gallery.subtitle}
+      </p>
+    </div>
+
+    <div class="gallery__grid">
+      {galleryImages.map((img, i) => (
+        <div class={`gallery__item gallery__item--${img.span || 'normal'} reveal reveal--scale reveal--delay-${(i % 4) + 1}`}>
+          <div class="gallery__image hover-zoom">
+            <img
+              src={img.src}
+              alt={img.alt}
+              loading="lazy"
+              width="600"
+              height="600"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gallery {
+    background: var(--cream-200);
+  }
+
+  .gallery__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  @media (min-width: 768px) {
+    .gallery__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .gallery__grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .gallery__item--tall {
+      grid-row: span 2;
+    }
+
+    .gallery__item--wide {
+      grid-column: span 2;
+    }
+  }
+
+  .gallery__image {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    height: 100%;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow var(--transition-base);
+  }
+
+  .gallery__image:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .gallery__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 200px;
+  }
+
+  @media (min-width: 1024px) {
+    .gallery__item--tall .gallery__image img {
+      min-height: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,303 @@
+---
+import business from '../data/business.json';
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getLocalizedPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+const currentYear = new Date().getFullYear();
+
+const quickLinks = [
+  { label: t.nav.home, href: getLocalizedPath('/', lang) },
+  { label: t.nav.about, href: getLocalizedPath('/#about', lang) },
+  { label: t.nav.collections, href: getLocalizedPath('/#collections', lang) },
+  { label: t.nav.whyUs, href: getLocalizedPath('/#why-us', lang) },
+  { label: t.nav.gallery, href: getLocalizedPath('/#gallery', lang) },
+  { label: t.nav.visitUs, href: getLocalizedPath('/#visit', lang) },
+  { label: t.nav.sitemap, href: getLocalizedPath('/sitemap.html', lang) },
+];
+
+const collectionLinks = business.collections.map(item => {
+  const loc = t.collections[item.id];
+  return {
+    label: loc ? loc.name : item.name,
+    href: getLocalizedPath(`/${item.id}`, lang),
+  };
+});
+---
+
+<footer class="footer" id="contact">
+  <div class="footer__gold-line"></div>
+
+  <div class="footer__main container">
+    <div class="footer__grid">
+      <!-- Brand Column -->
+      <div class="footer__brand">
+        <div class="footer__logo">
+          <img src="/images/SC_logo_round_HD_tight.png" alt="Sanjay Cut Piece logo" class="footer__logo-img" width="44" height="44" />
+          <div>
+            <span class="footer__logo-name">Sanjay Cut Piece</span>
+            <span class="footer__logo-hindi text-hindi">{business.nameHindi}</span>
+          </div>
+        </div>
+        <p class="footer__desc">
+          {t.footer.desc}
+        </p>
+        <div class="footer__tagline">
+          <span>Traditional</span>
+          <span class="footer__tagline-dot">•</span>
+          <span>Trendy</span>
+          <span class="footer__tagline-dot">•</span>
+          <span>Timeless</span>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer__links">
+        <h3 class="footer__heading">{t.footer.quickLinks}</h3>
+        <ul class="footer__list">
+          {quickLinks.map(link => (
+            <li><a href={link.href} class="footer__link">{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Collections -->
+      <div class="footer__links">
+        <h3 class="footer__heading">{t.footer.collections}</h3>
+        <ul class="footer__list">
+          {collectionLinks.map(link => (
+            <li><a href={link.href} class="footer__link">{link.label}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="footer__contact">
+        <h3 class="footer__heading">{t.footer.contactUs}</h3>
+
+        <div class="footer__contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          <span>{business.address.line1},<br/>{business.address.line2},<br/>{business.address.area}, {business.address.city}, {business.address.state} {business.address.pincode}</span>
+        </div>
+
+        <div class="footer__contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>{business.hours.display}<br/>{business.hours.days}</span>
+        </div>
+
+        <div class="footer__contact-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <a href={business.phoneLink} class="footer__link">{business.phoneFormatted}</a>
+        </div>
+
+        <div class="footer__contact-actions">
+          <a href={business.phoneLink} class="btn btn--sm" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+            📞 {t.ctas.call}
+          </a>
+          <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer" class="btn btn--sm" style="background: #25D366; color: white; border: 1px solid #25D366;">
+            💬 {t.ctas.whatsapp}
+          </a>
+          <a href={business.mapsLink} target="_blank" rel="noopener noreferrer" class="btn btn--sm" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
+            📍 {t.ctas.getDirections}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer__bottom">
+    <div class="container">
+      <div class="footer__bottom-inner">
+        <p class="footer__copyright">
+          &copy; {currentYear} {business.name}. {t.footer.allRightsReserved}
+        </p>
+        <p class="footer__location">
+          📍 {business.address.area}, {business.address.city}, {business.address.state}
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--burgundy-900);
+    color: var(--white);
+  }
+
+  .footer__gold-line {
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold-700), var(--gold-400), var(--gold-500), var(--gold-400), var(--gold-700));
+  }
+
+  .footer__main {
+    padding: var(--space-4xl) var(--space-lg) var(--space-2xl);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  @media (min-width: 640px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .footer__grid {
+      grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+      gap: var(--space-3xl);
+    }
+  }
+
+  /* Brand */
+  .footer__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+  }
+
+  .footer__logo-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 2px solid var(--gold-500);
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+  }
+
+  .footer__logo-name {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.2;
+  }
+
+  .footer__logo-hindi {
+    display: block;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.3;
+  }
+
+  .footer__desc {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.7;
+    margin-bottom: var(--space-lg);
+  }
+
+  .footer__tagline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-500);
+  }
+
+  .footer__tagline-dot {
+    color: var(--gold-600);
+    font-size: 0.5rem;
+  }
+
+  /* Links */
+  .footer__heading {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold-500);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid rgba(197, 165, 90, 0.2);
+  }
+
+  .footer__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .footer__link {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.65);
+    transition: color var(--transition-fast);
+    display: inline-block;
+    padding: 2px 0;
+  }
+
+  .footer__link:hover {
+    color: var(--gold-400);
+  }
+
+  /* Contact */
+  .footer__contact-item {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: flex-start;
+    margin-bottom: var(--space-md);
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+  }
+
+  .footer__contact-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--gold-500);
+  }
+
+  .footer__contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+  }
+
+  /* Bottom */
+  .footer__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: var(--space-lg) 0;
+  }
+
+  .footer__bottom-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .footer__copyright {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .footer__location {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+  }
+</style>

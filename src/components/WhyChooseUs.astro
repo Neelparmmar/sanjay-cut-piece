@@ -1,0 +1,139 @@
+---
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+
+const features = t.whyUs.items;
+
+const icons = [
+  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>`,
+  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`
+];
+---
+
+<section class="why-us section" id="why-us">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="section-heading__label">{t.whyUs.label}</span>
+      <h2 class="section-heading__title">{t.whyUs.title}</h2>
+      <div class="gold-divider" style="margin-bottom: var(--space-md);">
+        <div class="gold-divider__line"></div>
+        <span class="gold-divider__ornament">❖</span>
+        <div class="gold-divider__line"></div>
+      </div>
+    </div>
+
+    <div class="why-us__grid">
+      {features.map((feature, i) => (
+        <div class={`why-us__card reveal reveal--delay-${(i % 3) + 1}`}>
+          <div class="why-us__icon" set:html={icons[i]} />
+          <h3 class="why-us__title">{feature.title}</h3>
+          <p class="why-us__desc">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .why-us {
+    background: var(--cream-100);
+  }
+
+  .why-us__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+
+  @media (min-width: 768px) {
+    .why-us__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xl);
+    }
+  }
+
+  .why-us__card {
+    text-align: center;
+    padding: var(--space-2xl) var(--space-lg);
+    border: 1px solid var(--cream-300);
+    border-radius: var(--radius-lg);
+    background: var(--white);
+    transition: all var(--transition-base);
+  }
+
+  .why-us__card:hover {
+    border-color: var(--gold-500);
+    box-shadow: var(--shadow-gold);
+    transform: translateY(-2px);
+  }
+
+  .why-us__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--cream-200);
+    color: var(--burgundy-700);
+    margin-bottom: var(--space-lg);
+    transition: all var(--transition-base);
+  }
+
+  .why-us__card:hover .why-us__icon {
+    background: var(--burgundy-700);
+    color: var(--gold-400);
+  }
+
+  .why-us__title {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: var(--burgundy-900);
+    margin-bottom: var(--space-sm);
+  }
+
+  .why-us__desc {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--brown-600);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 640px) {
+    .why-us__card {
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .why-us__icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: var(--space-md);
+    }
+
+    .why-us__icon :global(svg) {
+      width: 22px;
+      height: 22px;
+    }
+
+    .why-us__title {
+      font-size: 0.9375rem;
+    }
+
+    .why-us__desc {
+      font-size: 0.8125rem;
+      display: none;
+    }
+  }
+</style>

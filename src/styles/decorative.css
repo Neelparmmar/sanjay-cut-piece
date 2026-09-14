@@ -1,0 +1,163 @@
+/* ========================================
+   DECORATIVE ELEMENTS
+   Indian textile-inspired ornamental design
+   ======================================== */
+
+/* ---- GOLD ORNAMENTAL DIVIDER ---- */
+.gold-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+
+.gold-divider__line {
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-500), transparent);
+}
+
+.gold-divider__ornament {
+  color: var(--gold-500);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.gold-divider--wide .gold-divider__line {
+  max-width: 200px;
+}
+
+.gold-divider--light .gold-divider__line {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.gold-divider--light .gold-divider__ornament {
+  color: var(--gold-400);
+}
+
+/* ---- SECTION HEADING WITH DECORATION ---- */
+.section-heading {
+  text-align: center;
+  margin-bottom: var(--space-3xl);
+}
+
+.section-heading__label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold-500);
+  margin-bottom: var(--space-sm);
+  display: block;
+}
+
+.section-heading__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.5vw, 2.625rem);
+  font-weight: 500;
+  color: var(--burgundy-900);
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+}
+
+.section-heading__subtitle {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--brown-600);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.section-heading--light .section-heading__title {
+  color: var(--white);
+}
+
+.section-heading--light .section-heading__subtitle {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.section-heading--light .section-heading__label {
+  color: var(--gold-400);
+}
+
+/* ---- DECORATIVE BORDER ---- */
+.decorative-border {
+  position: relative;
+}
+
+.decorative-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-600), var(--gold-400), var(--gold-600));
+  border-radius: 2px;
+}
+
+/* ---- GOLD ACCENT LINE ---- */
+.gold-line {
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold-600), var(--gold-400));
+  border-radius: 1px;
+}
+
+.gold-line--center {
+  margin: 0 auto;
+}
+
+.gold-line--wide {
+  width: 100px;
+}
+
+/* ---- TEXTILE PATTERN BACKGROUND ---- */
+.pattern-bg {
+  position: relative;
+}
+
+.pattern-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(197, 165, 90, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(197, 165, 90, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* ---- GOLD CORNER FLOURISH ---- */
+.corner-flourish {
+  position: relative;
+}
+
+.corner-flourish::before,
+.corner-flourish::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-color: var(--gold-500);
+  opacity: 0.4;
+}
+
+.corner-flourish::before {
+  top: 0;
+  left: 0;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+
+.corner-flourish::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}

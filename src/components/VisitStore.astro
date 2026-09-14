@@ -1,0 +1,250 @@
+---
+import business from '../data/business.json';
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<section class="visit section" id="visit">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="section-heading__label">{t.visit.label}</span>
+      <h2 class="section-heading__title">{t.visit.title}</h2>
+      <div class="gold-divider" style="margin-bottom: var(--space-md);">
+        <div class="gold-divider__line"></div>
+        <span class="gold-divider__ornament">❖</span>
+        <div class="gold-divider__line"></div>
+      </div>
+      <p class="section-heading__subtitle">
+        {t.visit.subtitle}
+      </p>
+    </div>
+
+    <div class="visit__grid">
+      <!-- Map / Image -->
+      <div class="visit__map reveal reveal--left">
+        <a href={business.mapsLink} target="_blank" rel="noopener noreferrer" class="visit__map-link" aria-label="Open location in Google Maps">
+          <div class="visit__map-placeholder">
+            <div class="visit__map-pin">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--burgundy-700)" stroke="none">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3" fill="white"/>
+              </svg>
+            </div>
+            <p class="visit__map-text">
+              <strong>{business.name}</strong><br/>
+              {business.address.line1}<br/>
+              {business.address.line2}<br/>
+              {business.address.area}, {business.address.city}
+            </p>
+            <span class="btn btn--gold btn--sm" style="margin-top: var(--space-md);">
+              {t.ctas.openInMaps}
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Store Info -->
+      <div class="visit__info reveal reveal--right">
+        <div class="visit__info-card">
+          <!-- Address -->
+          <div class="visit__detail">
+            <div class="visit__detail-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div class="visit__detail-content">
+              <h3 class="visit__detail-title">{t.visit.addressLabel}</h3>
+              <p class="visit__detail-text">{business.address.full}</p>
+            </div>
+          </div>
+
+          <!-- Hours -->
+          <div class="visit__detail">
+            <div class="visit__detail-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="visit__detail-content">
+              <h3 class="visit__detail-title">{t.visit.hoursLabel}</h3>
+              <p class="visit__detail-text">
+                <strong>{business.hours.display}</strong><br/>
+                {business.hours.days}
+              </p>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="visit__detail">
+            <div class="visit__detail-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="visit__detail-content">
+              <h3 class="visit__detail-title">{t.visit.phoneLabel}</h3>
+              <a href={business.phoneLink} class="visit__detail-link">{business.phoneFormatted}</a>
+            </div>
+          </div>
+
+          <!-- WhatsApp -->
+          <div class="visit__detail">
+            <div class="visit__detail-icon" style="color: #25D366;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+            <div class="visit__detail-content">
+              <h3 class="visit__detail-title">{t.visit.whatsappLabel}</h3>
+              <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer" class="visit__detail-link">{t.ctas.messageWhatsapp}</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="visit__actions">
+          <a href={business.mapsLink} target="_blank" rel="noopener noreferrer" class="btn btn--primary" style="flex: 1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            {t.ctas.getDirections}
+          </a>
+          <a href={business.phoneLink} class="btn btn--secondary" style="flex: 1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            {t.ctas.callNow}
+          </a>
+          <a href={business.whatsappLink} target="_blank" rel="noopener noreferrer" class="btn btn--gold" style="flex: 1;">
+            {t.ctas.whatsappUs}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .visit {
+    background: var(--cream-100);
+  }
+
+  .visit__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .visit__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3xl);
+      align-items: start;
+    }
+  }
+
+  /* Map placeholder */
+  .visit__map-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .visit__map-placeholder {
+    background: linear-gradient(135deg, var(--cream-200), var(--cream-300));
+    border: 2px solid var(--cream-400);
+    border-radius: var(--radius-xl);
+    padding: var(--space-3xl);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 350px;
+    justify-content: center;
+    transition: all var(--transition-base);
+  }
+
+  .visit__map-placeholder:hover {
+    border-color: var(--gold-500);
+    box-shadow: var(--shadow-gold);
+  }
+
+  .visit__map-pin {
+    margin-bottom: var(--space-lg);
+  }
+
+  .visit__map-text {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--brown-700);
+    line-height: 1.7;
+  }
+
+  /* Info card */
+  .visit__info-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-xl);
+  }
+
+  .visit__detail {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+  }
+
+  .visit__detail-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--cream-200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--burgundy-700);
+  }
+
+  .visit__detail-title {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold-600);
+    margin-bottom: 2px;
+  }
+
+  .visit__detail-text {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--brown-700);
+    line-height: 1.6;
+  }
+
+  .visit__detail-link {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--burgundy-700);
+    font-weight: 500;
+    transition: color var(--transition-fast);
+  }
+
+  .visit__detail-link:hover {
+    color: var(--gold-600);
+  }
+
+  /* Actions */
+  .visit__actions {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 640px) {
+    .visit__actions {
+      flex-direction: column;
+    }
+
+    .visit__actions .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

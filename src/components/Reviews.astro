@@ -1,0 +1,70 @@
+---
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<section class="reviews section--compact" id="reviews">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="section-heading__label">{t.reviews.label}</span>
+      <h2 class="section-heading__title">{t.reviews.title}</h2>
+      <div class="gold-divider" style="margin-bottom: var(--space-md);">
+        <div class="gold-divider__line"></div>
+        <span class="gold-divider__ornament">❖</span>
+        <div class="gold-divider__line"></div>
+      </div>
+    </div>
+
+    <div class="reviews__placeholder reveal">
+      <div class="reviews__placeholder-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+      </div>
+      <p class="reviews__placeholder-text" set:html={t.reviews.text.replace('\n', '<br/>')} />
+      <a
+        href="https://search.google.com/local/reviews?placeid=ChIJXXXXXXXXXX"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn--secondary btn--sm"
+        style="margin-top: var(--space-lg);"
+      >
+        {t.reviews.btnText}
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews {
+    background: var(--cream-100);
+  }
+
+  .reviews__placeholder {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-xl);
+    border: 2px dashed var(--cream-400);
+    border-radius: var(--radius-xl);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .reviews__placeholder-icon {
+    color: var(--gold-500);
+    margin-bottom: var(--space-lg);
+  }
+
+  .reviews__placeholder-text {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--brown-600);
+    line-height: 1.7;
+  }
+</style>
