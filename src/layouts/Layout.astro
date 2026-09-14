@@ -4,6 +4,7 @@ import '../styles/global.css';
 import '../styles/decorative.css';
 import '../styles/animations.css';
 import { domain } from '../data/seo';
+import business from '../data/business.json';
 import type { Language } from '../i18n/types';
 import { getLanguageFromPath, getCleanPath, getLocalizedPath, getLocalizedSeo } from '../i18n/utils';
 
@@ -76,11 +77,11 @@ const schemaGraph: any[] = [
     "image": `${domain}/images/hero-background.png`,
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Shop No. 2 & 3, Station Rd, Opp. Dream Arcade Bldg, near Jambli Naka",
-      "addressLocality": "Thane West",
-      "addressRegion": "Maharashtra",
-      "postalCode": "400601",
-      "addressCountry": "IN"
+      "streetAddress": `${business.address.line1}, ${business.address.line2}`,
+      "addressLocality": business.address.area,
+      "addressRegion": business.address.state,
+      "postalCode": business.address.pincode,
+      "addressCountry": business.address.country
     },
     "geo": {
       "@type": "GeoCoordinates",
@@ -89,9 +90,9 @@ const schemaGraph: any[] = [
     },
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-      "opens": "10:00",
-      "closes": "21:30"
+      "dayOfWeek": business.hours.daysOfWeek,
+      "opens": business.hours.opens,
+      "closes": business.hours.closes
     },
     "hasMap": "https://maps.app.goo.gl/XTzatKnhju5wWqSg6",
     "priceRange": "₹₹",
