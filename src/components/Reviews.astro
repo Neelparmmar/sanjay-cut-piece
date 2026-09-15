@@ -1,6 +1,5 @@
 ---
 import business from '../data/business.json';
-import { getLocalizedReviews } from '../data/staticReviews';
 import type { Language } from '../i18n/types';
 import { getLanguageFromPath, getTranslations } from '../i18n/utils';
 
@@ -10,7 +9,6 @@ interface Props {
 
 const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
 const t = getTranslations(lang);
-const initialReviews = getLocalizedReviews(lang);
 
 const writeReviewLink = business.googleReviewLink || `https://search.google.com/local/writereview?placeid=${business.googlePlaceId}`;
 const viewReviewsLink = business.googleReviewsViewLink || business.mapsLink || `https://maps.google.com/?cid=${business.googleCid}`;
@@ -19,35 +17,150 @@ const viewReviewsLink = business.googleReviewsViewLink || business.mapsLink || `
 const i18nTexts = {
   en: {
     writeReview: 'Write a Review',
-    basedOn: 'Google Rating based on 28+ reviews',
-    verified: 'Verified Google Review',
+    seeReviewsOnGoogle: 'See our latest reviews on Google',
+    fallbackDesc: 'Read genuine customer experiences and ratings directly on our verified Google Maps listing.',
+    basedOn: 'Google Rating based on {count} reviews',
     readMore: 'Read more',
     readLess: 'Read less'
   },
   hi: {
     writeReview: 'समीक्षा लिखें',
-    basedOn: '28+ समीक्षाओं के आधार पर गूगल रेटिंग',
-    verified: 'सत्यापित गूगल समीक्षा',
+    seeReviewsOnGoogle: 'गूगल पर हमारी नवीनतम समीक्षाएं देखें',
+    fallbackDesc: 'हमारी सत्यापित गूगल मैप्स लिस्टिंग पर सीधे वास्तविक ग्राहक अनुभव और रेटिंग पढ़ें।',
+    basedOn: '{count} समीक्षाओं के आधार पर गूगल रेटिंग',
     readMore: 'और पढ़ें',
     readLess: 'कम पढ़ें'
   },
   mr: {
     writeReview: 'समीक्षा लिहा',
-    basedOn: '28+ पुनरावलोकनांवर आधारित गूगल रेटिंग',
-    verified: 'पडताळणी केलेली गूगल समीक्षा',
+    seeReviewsOnGoogle: 'गूगलवर आमची नवीनतम पुनरावलोकने पहा',
+    fallbackDesc: 'आमच्या पडताळणी केलेल्या गूगल मॅप्स लिस्टिंगवर थेट ग्राहकांचे खरे अनुभव आणि रेटिंग पहा.',
+    basedOn: '{count} पुनरावलोकनांवर आधारित गूगल रेटिंग',
     readMore: 'अधिक वाचा',
     readLess: 'कमी वाचा'
   },
   gu: {
     writeReview: 'સમીક્ષા લખો',
-    basedOn: '28+ સમીક્ષાઓ પર આધારિત ગૂગલ રેટિંગ',
-    verified: 'ચકાસાયેલ ગૂગલ સમીક્ષા',
+    seeReviewsOnGoogle: 'ગૂગલ પર અમારી નવીનતમ સમીક્ષાઓ જુઓ',
+    fallbackDesc: 'અમારા ચકાસાયેલ ગૂગલ મેપ્સ લિસ્ટિંગ પર સીધા જ ગ્રાહકોના અસલી અનુભવો અને રેટિંગ્સ વાંચો.',
+    basedOn: '{count} સમીક્ષાઓ પર આધારિત ગૂગલ રેટિંગ',
     readMore: 'વધુ વાંચો',
     readLess: 'ઓછું વાંચો'
   }
 };
 
 const labels = i18nTexts[lang] || i18nTexts.en;
+
+interface GoogleReview {
+  id: string;
+  authorName: string;
+  authorUrl?: string;
+  profilePhotoUrl?: string;
+  rating: number;
+  relativeTimeDescription: string;
+  text: string;
+}
+
+interface FetchResult {
+  overallRating?: number;
+  totalRatingsCount?: number;
+  reviews: GoogleReview[];
+}
+
+// Build-time Google Places API Integration
+async function getRealGoogleReviews(): Promise<FetchResult> {
+  const apiKey =
+    process.env.GOOGLE_PLACES_API_KEY ||
+    import.meta.env.GOOGLE_PLACES_API_KEY ||
+    process.env.GOOGLE_API_KEY ||
+    import.meta.env.GOOGLE_API_KEY;
+
+  const placeId =
+    process.env.GOOGLE_PLACE_ID ||
+    import.meta.env.GOOGLE_PLACE_ID ||
+    business.googlePlaceId;
+
+  if (!apiKey || apiKey.trim() === '' || apiKey === 'your_google_places_api_key_here' || !placeId) {
+    return { reviews: [] };
+  }
+
+  try {
+    // Strategy 1: Google Places Details API (Legacy)
+    const legacyUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(
+      placeId
+    )}&fields=name,rating,reviews,user_ratings_total&reviews_sort=most_relevant&key=${encodeURIComponent(apiKey)}`;
+
+    const legacyRes = await fetch(legacyUrl);
+    if (legacyRes.ok) {
+      const data = await legacyRes.json();
+      if (data.status === 'OK' && data.result) {
+        const reviews: GoogleReview[] = [];
+        if (Array.isArray(data.result.reviews)) {
+          for (const r of data.result.reviews) {
+            if (r.text) {
+              reviews.push({
+                id: `rev-${r.time || Math.random().toString(36).slice(2, 9)}`,
+                authorName: r.author_name || 'Google User',
+                authorUrl: r.author_url,
+                profilePhotoUrl: r.profile_photo_url,
+                rating: Number(r.rating) || 5,
+                relativeTimeDescription: r.relative_time_description || '',
+                text: r.text || ''
+              });
+            }
+          }
+        }
+        return {
+          overallRating: data.result.rating,
+          totalRatingsCount: data.result.user_ratings_total,
+          reviews
+        };
+      }
+    }
+
+    // Strategy 2: Google Places API (New v1)
+    const v1Url = `https://places.googleapis.com/v1/places/${encodeURIComponent(placeId)}?languageCode=en`;
+    const v1Res = await fetch(v1Url, {
+      headers: {
+        'X-Goog-Api-Key': apiKey,
+        'X-Goog-FieldMask': 'id,displayName,rating,userRatingCount,reviews'
+      }
+    });
+
+    if (v1Res.ok) {
+      const data = await v1Res.json();
+      const reviews: GoogleReview[] = [];
+      if (Array.isArray(data.reviews)) {
+        for (const r of data.reviews) {
+          const bodyText = r.text?.text || r.originalText?.text || '';
+          if (bodyText) {
+            reviews.push({
+              id: r.name || `rev-${Math.random().toString(36).slice(2, 9)}`,
+              authorName: r.authorAttribution?.displayName || 'Google User',
+              authorUrl: r.authorAttribution?.uri,
+              profilePhotoUrl: r.authorAttribution?.photoUri,
+              rating: Number(r.rating) || 5,
+              relativeTimeDescription: r.relativePublishTimeDescription || '',
+              text: bodyText
+            });
+          }
+        }
+      }
+      return {
+        overallRating: data.rating,
+        totalRatingsCount: data.userRatingCount,
+        reviews
+      };
+    }
+  } catch (err) {
+    console.error('Build-time Google Places API fetch notice:', err);
+  }
+
+  return { reviews: [] };
+}
+
+const { overallRating, totalRatingsCount, reviews } = await getRealGoogleReviews();
+const hasReviews = reviews.length > 0;
 ---
 
 <section class="reviews section--compact" id="reviews" data-lang={lang}>
@@ -62,129 +175,152 @@ const labels = i18nTexts[lang] || i18nTexts.en;
       </div>
     </div>
 
-    <!-- Reviews Wrapper: Statically Rendered -->
     <div class="reviews__wrapper reveal">
-      <div id="reviews-active" class="reviews__active">
-        <!-- Header Bar with Google Summary -->
-        <div class="reviews__summary-bar">
-          <div class="reviews__summary-left">
-            <div class="reviews__google-logo" title="Google Reviews">
-              <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+      {hasReviews ? (
+        <div class="reviews__active">
+          <!-- Header Bar with Google Summary from API -->
+          <div class="reviews__summary-bar">
+            <div class="reviews__summary-left">
+              <div class="reviews__google-logo" title="Google Reviews">
+                <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
+              </div>
+              <div class="reviews__summary-rating">
+                {overallRating && (
+                  <span class="reviews__avg-score">{overallRating.toFixed(1)}</span>
+                )}
+                <div class="reviews__stars reviews__stars--gold" aria-label={`${overallRating || 5} stars out of 5`}>
+                  <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                {totalRatingsCount && (
+                  <span class="reviews__summary-caption">
+                    {labels.basedOn.replace('{count}', totalRatingsCount.toString())}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div class="reviews__summary-right">
+              <a
+                href={writeReviewLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--primary btn--sm"
+              >
+                {labels.writeReview}
+              </a>
+            </div>
+          </div>
+
+          <!-- Real Review Cards Grid -->
+          <div class="reviews__grid" aria-live="polite">
+            {reviews.map((review, idx) => (
+              <article class={`reviews__card reviews__card--item-${idx + 1} reveal-item`}>
+                <div class="reviews__card-header">
+                  <div class="reviews__avatar">
+                    {review.profilePhotoUrl ? (
+                      <img
+                        src={review.profilePhotoUrl}
+                        alt={review.authorName}
+                        class="reviews__avatar-img"
+                        loading="lazy"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                      />
+                    ) : null}
+                    <div class="reviews__avatar-initials" style={review.profilePhotoUrl ? 'display:none;' : 'display:flex;'}>
+                      {review.authorName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                  </div>
+                  <div class="reviews__card-author-info">
+                    {review.authorUrl ? (
+                      <a href={review.authorUrl} target="_blank" rel="noopener noreferrer" class="reviews__author-link">
+                        <h3 class="reviews__author-name">{review.authorName}</h3>
+                      </a>
+                    ) : (
+                      <h3 class="reviews__author-name">{review.authorName}</h3>
+                    )}
+                    <div class="reviews__card-meta">
+                      {review.relativeTimeDescription && (
+                        <span class="reviews__date">{review.relativeTimeDescription}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div class="reviews__card-stars" aria-label={`${review.rating} out of 5 stars`}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <span class={i < review.rating ? 'star-filled' : 'star-empty'}>★</span>
+                  ))}
+                </div>
+                <div class="reviews__card-body">
+                  <p class="reviews__card-text">{review.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div class="reviews__footer">
+            <div class="reviews__actions">
+              <a
+                href={viewReviewsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--secondary btn--sm"
+              >
+                {t.reviews.btnText}
+              </a>
+              <a
+                href={writeReviewLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--primary btn--sm"
+              >
+                {labels.writeReview}
+              </a>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <!-- Clean Fallback when Google API Key is unavailable -->
+        <div class="reviews__fallback">
+          <div class="reviews__fallback-card">
+            <div class="reviews__google-logo-lg" title="Google Reviews">
+              <svg width="48" height="48" viewBox="0 0 24 24" aria-hidden="true">
                 <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
                 <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
                 <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
                 <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
               </svg>
             </div>
-            <div class="reviews__summary-rating">
-              <span id="reviews-avg-rating" class="reviews__avg-score">4.8</span>
-              <div class="reviews__stars reviews__stars--gold" aria-label="4.8 stars out of 5">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-              <span id="reviews-summary-text" class="reviews__summary-caption">{labels.basedOn}</span>
+            <h3 class="reviews__fallback-title">{labels.seeReviewsOnGoogle}</h3>
+            <p class="reviews__fallback-desc">{labels.fallbackDesc}</p>
+            <div class="reviews__actions">
+              <a
+                href={viewReviewsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--primary"
+              >
+                {t.reviews.btnText}
+              </a>
+              <a
+                href={writeReviewLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--secondary"
+              >
+                {labels.writeReview}
+              </a>
             </div>
           </div>
-
-          <div class="reviews__summary-right">
-            <div class="reviews__verified-pill" title={labels.verified}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-              <span>{labels.verified}</span>
-            </div>
-          </div>
         </div>
-
-        <!-- The 5 Review Cards Grid (Statically Rendered) -->
-        <div id="reviews-grid" class="reviews__grid" aria-live="polite">
-          {initialReviews.map((review, idx) => (
-            <article class={`reviews__card reviews__card--item-${idx + 1} reveal-item`}>
-              <div class="reviews__card-header">
-                <div class="reviews__avatar">
-                  <img
-                    src={review.profilePhotoUrl}
-                    alt={review.authorName}
-                    class="reviews__avatar-img"
-                    loading="lazy"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                  />
-                  <div class="reviews__avatar-initials" style="display:none;">
-                    {review.authorName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
-                  </div>
-                </div>
-                <div class="reviews__card-author-info">
-                  <h3 class="reviews__author-name">{review.authorName}</h3>
-                  <div class="reviews__card-meta">
-                    <span class="reviews__verified-badge" title={labels.verified}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                      </svg>
-                      <span>{labels.verified}</span>
-                    </span>
-                    <span class="reviews__date">• {review.relativeTimeDescription}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="reviews__card-stars" aria-label={`${review.rating} out of 5 stars`}>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-              </div>
-              <div class="reviews__card-body">
-                <p class="reviews__card-text">{review.text}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <!-- Footer Navigation & Actions -->
-        <div class="reviews__footer">
-          <div class="reviews__actions">
-            <a
-              id="reviews-view-all"
-              href={viewReviewsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn--secondary btn--sm"
-            >
-              {t.reviews.btnText}
-            </a>
-            <a
-              id="reviews-write"
-              href={writeReviewLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn--primary btn--sm"
-            >
-              {labels.writeReview}
-            </a>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   </div>
 </section>
-
-<!-- Client Hydration & Live Sync (Optional Fallback Enhancement) -->
-<script is:inline define:vars={{ labels, initialReviews }}>
-  (function syncReviews() {
-    const avgRatingEl = document.getElementById('reviews-avg-rating');
-
-    fetch('/api/reviews.json')
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.success && data.rating && avgRatingEl) {
-          avgRatingEl.textContent = Number(data.rating).toFixed(1);
-        }
-      })
-      .catch(err => {
-        // Silently preserve the 5 statically rendered reviews
-        console.debug('Using pre-rendered static reviews:', err);
-      });
-  })();
-</script>
 
 <style>
   .reviews {
@@ -259,73 +395,22 @@ const labels = i18nTexts[lang] || i18nTexts.en;
     margin-left: var(--space-xs);
   }
 
-  .reviews__verified-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--burgundy-800);
-    background: var(--cream-200);
-    padding: 6px 14px;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--cream-300);
-  }
-
-  /* Exactly 5 Reviews Balanced Grid Layout */
+  /* Dynamic Grid Layout */
   .reviews__grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: var(--space-lg);
-    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
-  /* 3 cards on row 1, 2 centered cards on row 2 on desktop */
-  @media (min-width: 1024px) {
-    .reviews__card--item-1,
-    .reviews__card--item-2,
-    .reviews__card--item-3 {
-      grid-column: span 2;
-    }
-    .reviews__card--item-4 {
-      grid-column: 2 / span 2;
-    }
-    .reviews__card--item-5 {
-      grid-column: 4 / span 2;
-    }
-  }
-
-  /* 2 columns on tablet */
   @media (max-width: 1023px) and (min-width: 680px) {
     .reviews__grid {
       grid-template-columns: repeat(2, 1fr);
     }
-    .reviews__card--item-1,
-    .reviews__card--item-2,
-    .reviews__card--item-3,
-    .reviews__card--item-4 {
-      grid-column: span 1;
-    }
-    .reviews__card--item-5 {
-      grid-column: 1 / span 2;
-      max-width: 520px;
-      margin: 0 auto;
-      width: 100%;
-    }
   }
 
-  /* 1 column on mobile */
   @media (max-width: 679px) {
     .reviews__grid {
       grid-template-columns: 1fr;
-    }
-    .reviews__card--item-1,
-    .reviews__card--item-2,
-    .reviews__card--item-3,
-    .reviews__card--item-4,
-    .reviews__card--item-5 {
-      grid-column: span 1;
     }
   }
 
@@ -393,6 +478,15 @@ const labels = i18nTexts[lang] || i18nTexts.en;
     flex: 1;
   }
 
+  .reviews__author-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .reviews__author-link:hover .reviews__author-name {
+    color: var(--gold-600);
+  }
+
   .reviews__author-name {
     font-family: var(--font-display);
     font-size: 1.05rem;
@@ -411,17 +505,8 @@ const labels = i18nTexts[lang] || i18nTexts.en;
     margin-top: 3px;
   }
 
-  .reviews__verified-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 0.6875rem;
-    font-weight: 500;
-    color: var(--brown-600);
-  }
-
   .reviews__date {
-    font-size: 0.6875rem;
+    font-size: 0.75rem;
     color: var(--brown-500);
   }
 
@@ -432,6 +517,14 @@ const labels = i18nTexts[lang] || i18nTexts.en;
     margin-bottom: var(--space-sm);
     display: flex;
     align-items: center;
+  }
+
+  .star-filled {
+    color: #F4B400;
+  }
+
+  .star-empty {
+    color: var(--cream-300);
   }
 
   .reviews__card-body {
@@ -459,5 +552,53 @@ const labels = i18nTexts[lang] || i18nTexts.en;
     justify-content: center;
     gap: var(--space-md);
     flex-wrap: wrap;
+  }
+
+  /* Clean Fallback Banner Card */
+  .reviews__fallback {
+    display: flex;
+    justify-content: center;
+  }
+
+  .reviews__fallback-card {
+    background: var(--white);
+    border: 1px solid var(--cream-300);
+    border-radius: var(--radius-xl);
+    padding: var(--space-2xl) var(--space-xl);
+    text-align: center;
+    max-width: 640px;
+    width: 100%;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .reviews__google-logo-lg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    background: var(--cream-100);
+    border-radius: 50%;
+    margin-bottom: var(--space-md);
+  }
+
+  .reviews__fallback-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--burgundy-900);
+    margin-bottom: var(--space-xs);
+  }
+
+  .reviews__fallback-desc {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--brown-600);
+    margin-bottom: var(--space-lg);
+    line-height: 1.6;
+    max-width: 480px;
   }
 </style>

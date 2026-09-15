@@ -60,18 +60,17 @@ export const GET: APIRoute = async () => {
     });
   }
 
-  // If no API key is configured, return authentic static reviews
+  // If no API key is configured, return empty response indicating API key required
   if (!apiKey || apiKey === 'your_google_places_api_key_here') {
-    const staticResponse: ReviewsResponse = {
-      success: true,
+    const response: ReviewsResponse = {
+      success: false,
+      code: 'MISSING_API_KEY',
+      error: 'GOOGLE_PLACES_API_KEY environment variable is not configured.',
       placeId,
-      businessName: 'Sanjay Cutpiece And Matching Centre',
-      rating: 4.8,
-      totalRatings: 28,
-      reviews: fallbackReviews
+      reviews: []
     };
 
-    return new Response(JSON.stringify(staticResponse), {
+    return new Response(JSON.stringify(response), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
@@ -82,12 +81,11 @@ export const GET: APIRoute = async () => {
 
   try {
     let reviewsList: ReviewItem[] = [];
-    let businessName = 'Sanjay Cutpiece And Matching Centre';
-    let rating = 4.5;
-    let totalRatings = 22;
+    let businessName = 'Sanjay Cut Piece';
+    let rating: number | undefined;
+    let totalRatings: number | undefined;
 
     // Strategy 1: Google Places Details API (Legacy)
-    // Fetch both most_relevant and newest to maximize authentic reviews
     const fetchSortOrder = async (sortOrder: 'most_relevant' | 'newest') => {
       const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(
         placeId
@@ -108,8 +106,8 @@ export const GET: APIRoute = async () => {
 
     if (legacyData && legacyData.status === 'OK' && legacyData.result) {
       businessName = legacyData.result.name || businessName;
-      rating = legacyData.result.rating || rating;
-      totalRatings = legacyData.result.user_ratings_total || totalRatings;
+      rating = legacyData.result.rating;
+      totalRatings = legacyData.result.user_ratings_total;
 
       const rawReviews: any[] = [];
       if (Array.isArray(legacyData.result.reviews)) {
@@ -132,7 +130,7 @@ export const GET: APIRoute = async () => {
           seen.add(key);
           reviewsList.push({
             id: `review-${r.time || Math.random().toString(36).slice(2, 9)}`,
-            authorName: r.author_name || 'Verified Customer',
+            authorName: r.author_name || 'Google User',
             authorUrl: r.author_url,
             profilePhotoUrl: r.profile_photo_url,
             rating: Number(r.rating) || 5,
@@ -163,15 +161,15 @@ export const GET: APIRoute = async () => {
       if (newRes.ok) {
         const newData = await newRes.json();
         businessName = newData.displayName?.text || businessName;
-        rating = newData.rating || rating;
-        totalRatings = newData.userRatingCount || totalRatings;
+        rating = newData.rating;
+        totalRatings = newData.userRatingCount;
 
         if (Array.isArray(newData.reviews)) {
           for (const r of newData.reviews) {
             reviewsList.push({
               id: r.name || `review-${Math.random().toString(36).slice(2, 9)}`,
               authorName:
-                r.authorAttribution?.displayName || 'Verified Customer',
+                r.authorAttribution?.displayName || 'Google User',
               authorUrl: r.authorAttribution?.uri,
               profilePhotoUrl: r.authorAttribution?.photoUri,
               rating: Number(r.rating) || 5,
@@ -244,12 +242,11 @@ export const GET: APIRoute = async () => {
   } catch (err: any) {
     return new Response(
       JSON.stringify({
-        success: true,
+        success: false,
+        code: 'FETCH_ERROR',
+        error: err.message || 'Failed to fetch Google Reviews',
         placeId,
-        businessName: 'Sanjay Cutpiece And Matching Centre',
-        rating: 4.8,
-        totalRatings: 28,
-        reviews: fallbackReviews
+        reviews: []
       } satisfies ReviewsResponse),
       {
         status: 200,
@@ -258,3 +255,4 @@ export const GET: APIRoute = async () => {
     );
   }
 };
+
