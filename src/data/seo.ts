@@ -13,7 +13,7 @@ export interface PageSEO {
   breadcrumbs: { name: string; item: string }[];
 }
 
-export const domain = 'https://sanjay-matching-centre.com';
+export const domain = 'https://www.sanjaycutpiece.in';
 
 export const seoConfig: Record<string, PageSEO> = {
   '/': {
