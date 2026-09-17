@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-Sitemap: https://sanjay-matching-centre.com/sitemap.xml
+Sitemap: https://www.sanjaycutpiece.in/sitemap.xml

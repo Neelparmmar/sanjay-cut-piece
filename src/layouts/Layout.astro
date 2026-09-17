@@ -61,32 +61,42 @@ const schemaGraph: any[] = [
     "@id": `${domain}/#website`,
     "url": domain,
     "name": "Sanjay Cut Piece",
-    "description": "Quality Fabrics, Dress Materials & Cut Pieces Shop in Thane West since 1977.",
+    "alternateName": ["Sanjay Matching Centre", "Sanjay Cut Piece Centre", "संजय मॅचिंग सेंटर"],
+    "description": "Quality Fabrics, Dress Materials, Cut Pieces & Matching Centre in Thane West since 1977.",
     "publisher": {
       "@id": `${domain}/#organization`
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${domain}/?q={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
     }
   },
   {
-    "@type": "ClothingStore",
+    "@type": ["ClothingStore", "Store"],
     "@id": `${domain}/#organization`,
     "name": "Sanjay Cut Piece",
-    "alternateName": ["संजय मॅचिंग सेंटर आणि कटपीस सेंटर", "Sanjay Cut Piece Centre"],
+    "alternateName": ["संजय मॅचिंग सेंटर आणि कटपीस सेंटर", "Sanjay Cut Piece Centre", "Sanjay Matching Centre"],
     "url": domain,
     "telephone": "+919029614321",
     "foundingDate": "1977",
     "image": `${domain}/images/hero-background.png`,
+    "logo": `${domain}/images/SC_logo_round_HD_tight.png`,
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": `${business.address.line1}, ${business.address.line2}`,
-      "addressLocality": business.address.area,
+      "streetAddress": `${business.address.line1}, ${business.address.line2}, ${business.address.area}`,
+      "addressLocality": business.address.city,
       "addressRegion": business.address.state,
       "postalCode": business.address.pincode,
       "addressCountry": business.address.country
     },
     "geo": {
       "@type": "GeoCoordinates",
-      "latitude": "19.1860",
-      "longitude": "72.9759"
+      "latitude": "19.1934544",
+      "longitude": "72.9775329"
     },
     "openingHoursSpecification": {
       "@type": "OpeningHoursSpecification",
@@ -95,13 +105,23 @@ const schemaGraph: any[] = [
       "closes": business.hours.closes
     },
     "hasMap": "https://maps.app.goo.gl/XTzatKnhju5wWqSg6",
+    "sameAs": [
+      "https://maps.app.goo.gl/XTzatKnhju5wWqSg6",
+      `https://maps.google.com/?cid=5133242001760217794`
+    ],
     "priceRange": "₹₹",
     "currenciesAccepted": "INR",
     "paymentAccepted": "Cash, UPI",
-    "areaServed": {
-      "@type": "City",
-      "name": "Thane"
-    }
+    "areaServed": [
+      {
+        "@type": "City",
+        "name": "Thane"
+      },
+      {
+        "@type": "City",
+        "name": "Thane West"
+      }
+    ]
   }
 ];
 
@@ -147,8 +167,7 @@ if (effectiveSchemaType === 'Product' && cleanPath !== '/') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  {keywords && keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
-  <meta name="robots" content="index, follow" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
 
   <!-- Preconnect to fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -170,6 +189,9 @@ if (effectiveSchemaType === 'Product' && cleanPath !== '/') {
   <meta property="og:type" content="website" />
   <meta property="og:url" content={canonicalURL.href} />
   <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Sanjay Cut Piece — Fabric Store & Matching Centre in Thane" />
   <meta property="og:locale" content={localeMap[lang]} />
   <meta property="og:site_name" content="Sanjay Cut Piece" />
 
@@ -178,6 +200,7 @@ if (effectiveSchemaType === 'Product' && cleanPath !== '/') {
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={ogImageUrl} />
+  <meta name="twitter:image:alt" content="Sanjay Cut Piece — Fabric Store & Matching Centre in Thane" />
 
   <!-- Geo Meta -->
   <meta name="geo.region" content="IN-MH" />

@@ -41,6 +41,7 @@ export const gu: Translations = {
     since: '1977 થી',
     brandName: 'Sanjay Cut Piece',
     nameSubtitle: 'સંજય મેચિંગ સેન્ટર',
+    h1Subtitle: 'Matching Centre & Cut Piece Shop — Jambli Naka, Thane',
     tagline: 'ઉત્તમોત્તમ કાપડ. પરંપરાગત મૂલ્યો. તમારો વિશ્વાસ, અમારી પ્રાથમિકતા.',
     description: 'ઠાણે વેસ્ટ સ્થિત અમારા સ્ટોર પર ડ્રેસ મટિરિયલ્સ, બ્લાઉઝ મટિરિયલ્સ, કાપડ, દુપટ્ટા, મેચિંગ મટિરિયલ્સ અને વધુ શોધો.',
     location: 'જામભળી નાકા, ઠાણે વેસ્ટ',

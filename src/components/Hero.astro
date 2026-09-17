@@ -36,6 +36,7 @@ const t = getTranslations(lang);
       <h1 class="hero__title hero-entrance hero-entrance--delay-2">
         <span class="hero__title-main">{t.hero.brandName}</span>
         <span class="hero__title-hindi text-hindi">{t.hero.nameSubtitle}</span>
+        <span class="hero__title-subtitle">{t.hero.h1Subtitle}</span>
       </h1>
 
       <!-- Tagline -->
@@ -155,6 +156,16 @@ const t = getTranslations(lang);
     color: rgba(255, 255, 255, 0.7);
     margin-top: var(--space-sm);
     font-weight: 400;
+  }
+
+  .hero__title-subtitle {
+    display: block;
+    font-family: var(--font-body);
+    font-size: clamp(0.8125rem, 1.5vw, 1rem);
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 6px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
   }
 
   /* Tagline */

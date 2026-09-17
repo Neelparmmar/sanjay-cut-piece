@@ -41,6 +41,7 @@ export const hi: Translations = {
     since: '1977 से',
     brandName: 'Sanjay Cut Piece',
     nameSubtitle: 'संजय मॅचिंग सेंटर',
+    h1Subtitle: 'Matching Centre & Cut Piece Shop — Jambli Naka, Thane',
     tagline: 'उत्तम गुणवत्ता के कपड़े। पारंपरिक मूल्य। आपका विश्वास, हमारी प्राथमिकता।',
     description: 'ठाणे पश्चिम स्थित हमारे स्टोर पर ड्रेस मटेरियल, ब्लाउज मटेरियल, फैब्रिक्स, दुपट्टे, मैचिंग मटेरियल और बहुत कुछ खोजें।',
     location: 'जांभली नाका, ठाणे पश्चिम',

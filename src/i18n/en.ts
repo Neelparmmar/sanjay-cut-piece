@@ -41,23 +41,24 @@ export const en: Translations = {
     since: 'Since 1977',
     brandName: 'Sanjay Cut Piece',
     nameSubtitle: 'संजय मॅचिंग सेंटर',
+    h1Subtitle: 'Matching Centre & Cut Piece Shop — Jambli Naka, Thane',
     tagline: 'Quality Fabrics. Traditional Values. Your Trust, Our Priority.',
-    description: 'Discover dress materials, blouse materials, fabrics, dupattas, matching materials and more at our store in Thane West.',
+    description: 'Discover cotton fabrics, dress materials, blouse materials, cut pieces, readymade blouses, dupattas and more — at our fabric store & matching centre in Jambli Naka, Thane West.',
     location: 'Jambli Naka, Thane West',
   },
   about: {
     label: 'Our Story',
     title: 'A Heritage of Quality & Trust in Thane',
-    p1: 'Since 1977, Sanjay Cut Piece has been a trusted destination for quality fabrics and dress materials in Thane West. What began as a small shop near Jambli Naka has grown into one of the most recognised names for textiles in the area.',
-    p2: 'We specialise in a wide range of products — from exquisite dress materials and blouse fabrics to ready-made blouses, dupattas, leggings, saree petticoats, and more. Whether you\'re looking for traditional silk or modern prints, we have something for everyone.',
-    p3: 'Our commitment to quality fabrics, traditional values, and personal service has earned us the trust of generations of families across Thane.',
+    p1: 'Since 1977, Sanjay Cut Piece has been a trusted destination for quality fabrics and dress materials in Thane West. What began as a small shop near Jambli Naka has grown into one of the most recognised cut piece centres and matching centres for textiles in the area.',
+    p2: 'We specialise in a wide range of products — from cotton fabrics and ladies fabric selections to dress materials, blouse materials, readymade blouses, dupattas, leggings, saree petticoats, and more. Whether you\'re looking for traditional silk or modern prints, our textile shop has something for everyone.',
+    p3: 'Our commitment to quality fabrics, traditional values, and personal service has made Sanjay Cut Piece and Matching Centre a household name across Thane and the surrounding areas.',
     badgeNumber: '47+',
     badgeText: 'Years of Trust',
   },
   collectionsSection: {
     label: 'Explore Our Range',
     title: 'Our Collections',
-    subtitle: 'From dress materials to dupattas, explore our wide range of quality textiles and fabrics at our store in Thane.',
+    subtitle: 'From cotton fabrics and dress materials to readymade blouses and dupattas, explore our wide range of quality textiles and ladies fabrics at our cut piece shop in Jambli Naka, Thane.',
     exploreCollection: 'Explore Collection',
     visitNote: 'Visit our store to explore the complete collection in person.',
   },
@@ -72,23 +73,23 @@ export const en: Translations = {
     items: [
       {
         title: 'Quality Fabrics',
-        description: 'Carefully curated collection of premium quality fabrics from trusted sources.',
+        description: 'Carefully curated collection of premium cotton fabrics, dress materials, blouse materials and textiles from trusted sources.',
       },
       {
         title: 'Wide Collection',
-        description: 'From dress materials to dupattas — everything you need under one roof.',
+        description: 'From cotton cut pieces and matching fabrics to dress materials, blouses and dupattas — everything under one roof.',
       },
       {
         title: 'Since 1977',
-        description: 'Over four decades of serving Thane with dedication and trust.',
+        description: 'Over four decades as a trusted fabric shop, cut piece centre and matching centre in Thane West.',
       },
       {
         title: 'Expert Guidance',
-        description: 'Personal attention and expert advice to help you find the perfect fabric.',
+        description: 'Personal attention and expert advice for colour matching, blouse matching fabric, suit material and more.',
       },
       {
         title: 'Trusted Locally',
-        description: 'A trusted name in Thane for generations of families.',
+        description: 'A trusted cut piece shop and matching centre at Jambli Naka, Thane — serving generations of families.',
       },
       {
         title: 'Traditional Values',
@@ -132,14 +133,14 @@ export const en: Translations = {
   visit: {
     label: 'Find Us',
     title: 'Visit Our Store in Thane',
-    subtitle: 'Experience our collection in person. We\'re conveniently located near Jambli Naka, Thane West.',
+    subtitle: 'Experience our full collection in person at our cut piece shop & fabric store near Jambli Naka, Thane West. Open every day.',
     addressLabel: 'Address',
     hoursLabel: 'Opening Hours',
     phoneLabel: 'Phone',
     whatsappLabel: 'WhatsApp',
   },
   footer: {
-    desc: 'Your trusted destination for quality fabrics, dress materials, blouse materials, and more in Thane West. Serving customers with traditional values since 1977.',
+    desc: 'Your trusted cut piece shop & matching centre at Jambli Naka, Thane West. Quality fabrics, dress materials, cotton fabrics, ladies fabric, blouse materials, readymade blouses and more — serving Thane with traditional values since 1977.',
     quickLinks: 'Quick Links',
     collections: 'Collections',
     contactUs: 'Contact Us',
@@ -151,7 +152,7 @@ export const en: Translations = {
     badge: 'Premium Quality • Since 1977',
     whyChooseTitle: 'Why Choose Our',
     leadTextPrefix: 'At',
-    leadTextSuffix: 'in Thane West, we offer an unmatchable variety of high-grade fabrics crafted for everyday wear, festival celebrations, wedding attire, and bespoke tailoring.',
+    leadTextSuffix: 'near Jambli Naka, Thane West, we offer an unmatchable variety of quality fabrics crafted for everyday wear, festival celebrations, wedding attire, and bespoke tailoring. Shop for matching fabrics, cotton cloth, dress material, blouse cloth and more.',
     features: [
       {
         title: 'Vast Shade & Material Range',
@@ -192,26 +193,26 @@ export const en: Translations = {
     'dress-materials': {
       id: 'dress-materials',
       name: 'Dress Materials',
-      description: 'Exquisite dress materials in cotton, silk, linen, georgette, chanderi and more.',
-      alt: 'Dress material collection at Sanjay Cut Piece, Thane',
+      description: 'Ladies dress material, salwar suit material & kurti fabric — in cotton, silk, georgette, chanderi and more.',
+      alt: 'Ladies dress material and suit material collection at Sanjay Cut Piece, Thane',
     },
     'blouse-materials': {
       id: 'blouse-materials',
       name: 'Blouse Materials',
-      description: 'Premium blouse fabrics in silk, brocade, raw silk, cotton, fancy prints and more.',
-      alt: 'Blouse material collection at Sanjay Cut Piece, Thane',
+      description: 'Blouse matching fabric & cotton blouse material — in silk, brocade, raw silk, fancy prints and more.',
+      alt: 'Blouse matching fabric and blouse material at Sanjay Cut Piece, Thane',
     },
     'ready-made-blouses': {
       id: 'ready-made-blouses',
       name: 'Ready Made Blouses',
-      description: 'Beautifully crafted ready-to-wear blouses for traditional, party wear and everyday occasions.',
-      alt: 'Ready made blouse collection at Sanjay Cut Piece, Thane',
+      description: 'Readymade ladies blouse & designer blouse — crafted for traditional, party wear and everyday occasions.',
+      alt: 'Readymade ladies blouse collection at Sanjay Cut Piece blouse shop, Thane',
     },
     'fabrics': {
       id: 'fabrics',
       name: 'Fabrics',
-      description: 'A wide selection of quality fabrics for all your creative needs and custom tailoring.',
-      alt: 'Fabric collection at Sanjay Cut Piece, Thane',
+      description: 'Cotton fabric, cotton cloth, printed fabric & quality textiles for all your creative needs and custom tailoring.',
+      alt: 'Cotton fabric and cloth collection at Sanjay Cut Piece fabric shop, Thane',
     },
     'leggings': {
       id: 'leggings',
@@ -240,14 +241,14 @@ export const en: Translations = {
     'cut-pieces': {
       id: 'cut-pieces',
       name: 'Cut Pieces',
-      description: 'Quality fabric cut pieces in various sizes, textures and patterns for your projects.',
-      alt: 'Cut piece fabric collection at Sanjay Cut Piece, Thane',
+      description: 'Cotton cut pieces & fabric cut pieces in various sizes, textures and patterns — at Thane\'s trusted cut piece centre near Jambli Naka.',
+      alt: 'Cut piece fabric collection at Sanjay Cut Piece cut piece centre, Thane',
     },
     'matching-materials': {
       id: 'matching-materials',
       name: 'Matching Materials',
-      description: 'Perfectly coordinated matching fabric sets for a complete, harmonious look.',
-      alt: 'Matching material sets at Sanjay Cut Piece, Thane',
+      description: 'Blouse matching fabric, matching cloth & coordinated fabric sets — at your matching centre in Jambli Naka, Thane.',
+      alt: 'Matching material and matching fabric sets at Sanjay Cut Piece matching centre, Thane',
     },
   },
 };

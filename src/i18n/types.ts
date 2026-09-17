@@ -48,6 +48,7 @@ export interface Translations {
     since: string;
     brandName: string;
     nameSubtitle: string;
+    h1Subtitle: string;
     tagline: string;
     description: string;
     location: string;
