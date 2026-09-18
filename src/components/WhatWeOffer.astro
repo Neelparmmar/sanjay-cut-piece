@@ -1,0 +1,59 @@
+---
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+---
+
+<section class="what-we-offer section--compact" id="what-we-offer">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="section-heading__label">{t.whatWeOffer.label}</span>
+      <h2 class="section-heading__title">{t.whatWeOffer.title}</h2>
+      <div class="gold-divider" style="margin-bottom: var(--space-md);">
+        <div class="gold-divider__line"></div>
+        <span class="gold-divider__ornament">❖</span>
+        <div class="gold-divider__line"></div>
+      </div>
+    </div>
+
+    <div class="what-we-offer__content reveal">
+      <p class="what-we-offer__text">
+        {t.whatWeOffer.description}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .what-we-offer {
+    background: var(--cream-200);
+    padding: var(--space-3xl) 0;
+  }
+
+  .what-we-offer__content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .what-we-offer__text {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--brown-700);
+    line-height: 1.8;
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .what-we-offer__text {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+  }
+</style>

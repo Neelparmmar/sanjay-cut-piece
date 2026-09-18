@@ -7,6 +7,7 @@ import { domain } from '../data/seo';
 import business from '../data/business.json';
 import type { Language } from '../i18n/types';
 import { getLanguageFromPath, getCleanPath, getLocalizedPath, getLocalizedSeo } from '../i18n/utils';
+import { getTranslations } from '../i18n/utils';
 
 interface Props {
   title?: string;
@@ -121,7 +122,22 @@ const schemaGraph: any[] = [
         "@type": "City",
         "name": "Thane West"
       }
-    ]
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Fabric & Textile Collections",
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "Blouse Pieces & Blouse Material" },
+        { "@type": "OfferCatalog", "name": "Dress Materials & Suit Fabric" },
+        { "@type": "OfferCatalog", "name": "Dupattas" },
+        { "@type": "OfferCatalog", "name": "Leggings" },
+        { "@type": "OfferCatalog", "name": "Cut Pieces & Fabric Cut Pieces" },
+        { "@type": "OfferCatalog", "name": "Saree Matching Fabric" },
+        { "@type": "OfferCatalog", "name": "Cotton & Silk Fabrics" },
+        { "@type": "OfferCatalog", "name": "Ready Made Blouses" },
+        { "@type": "OfferCatalog", "name": "Saree Petticoats & Shapewear" }
+      ]
+    }
   }
 ];
 
@@ -156,6 +172,23 @@ if (effectiveSchemaType === 'Product' && cleanPath !== '/') {
         "@id": `${domain}/#organization`
       }
     }
+  });
+}
+
+// Add FAQPage schema on homepage
+if (cleanPath === '/') {
+  const t = getTranslations(lang);
+  schemaGraph.push({
+    "@type": "FAQPage",
+    "@id": `${canonicalURL.href}#faq`,
+    "mainEntity": t.faq.items.map((item) => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
   });
 }
 ---

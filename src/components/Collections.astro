@@ -73,23 +73,6 @@ const collections = business.collections.map(item => {
       })}
     </div>
 
-    <!-- Bottom CTA -->
-    <div class="collections__bottom reveal" style="text-align: center; margin-top: var(--space-3xl);">
-      <p class="text-body" style="margin-bottom: var(--space-lg); color: var(--brown-600);">
-        {t.collectionsSection.visitNote}
-      </p>
-      <div style="display: flex; justify-content: center; gap: var(--space-md); flex-wrap: wrap;">
-        <a href={getLocalizedPath('/#visit', lang)} class="btn btn--primary">{t.ctas.visitStore}</a>
-        <a
-          href={`${business.whatsappLink}?text=Hi, I'd like to know more about your collections.`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn--secondary"
-        >
-          {t.ctas.whatsappUs}
-        </a>
-      </div>
-    </div>
   </div>
 </section>
 

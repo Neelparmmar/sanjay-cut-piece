@@ -144,5 +144,15 @@ export interface Translations {
     xmlHeading: string;
     xmlDesc: string;
   };
+  whatWeOffer: {
+    label: string;
+    title: string;
+    description: string;
+  };
+  faq: {
+    label: string;
+    title: string;
+    items: Array<{ question: string; answer: string }>;
+  };
   collections: Record<string, LocalizedCollection>;
 }

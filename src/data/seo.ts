@@ -18,11 +18,11 @@ export const domain = 'https://www.sanjaycutpiece.in';
 export const seoConfig: Record<string, PageSEO> = {
   '/': {
     url: '/',
-    title: 'Fabric Shop & Matching Centre in Thane | Sanjay Cut Piece — Since 1977',
-    description: 'Sanjay Cut Piece at Jambli Naka, Thane West — your trusted cut piece centre & matching centre for dress materials, cotton fabrics, blouse materials, readymade blouses, dupattas, ladies fabric & more. Serving Thane since 1977.',
+    title: 'Sanjay Cut Piece | Blouse Pieces, Dupattas, Leggings & Dress Material in Thane, Jambli Naka — Since 1977',
+    description: 'Sanjay Cut Piece is Thane\'s trusted fabric & matching centre since 1977 — shop blouse pieces, cotton & silk dress material, dupattas, leggings, saree petticoats and saree matching fabric near Jambli Naka, Thane West. Visit us today!',
     primaryKeyword: 'fabric shop Thane',
-    secondaryKeywords: ['cut piece centre Thane', 'matching centre Jambli Naka', 'ladies fabric shop Thane', 'cotton fabric shop Thane'],
-    longTailKeywords: ['cut piece shop Jambli Naka Thane', 'matching centre near me Thane West'],
+    secondaryKeywords: ['cut piece centre Thane', 'matching centre Jambli Naka', 'ladies fabric shop Thane', 'cotton fabric shop Thane', 'leggings shop Thane', 'dupatta shop Jambli Naka', 'blouse pieces Thane West', 'dress material Thane'],
+    longTailKeywords: ['cut piece shop Jambli Naka Thane', 'matching centre near me Thane West', 'women dress material shop Thane West', 'leggings and dupatta shop near Jambli Naka Thane'],
     searchIntent: 'Commercial / Local',
     h1: 'Sanjay Cut Piece — Fabric Shop & Matching Centre in Thane Since 1977',
     priority: 1.0,

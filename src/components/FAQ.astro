@@ -1,0 +1,147 @@
+---
+import type { Language } from '../i18n/types';
+import { getLanguageFromPath, getTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Language;
+}
+
+const { lang = getLanguageFromPath(Astro.url.pathname) } = Astro.props;
+const t = getTranslations(lang);
+const faqItems = t.faq.items;
+---
+
+<section class="faq section--compact" id="faq">
+  <div class="container">
+    <div class="section-heading reveal">
+      <span class="section-heading__label">{t.faq.label}</span>
+      <h2 class="section-heading__title">{t.faq.title}</h2>
+      <div class="gold-divider" style="margin-bottom: var(--space-md);">
+        <div class="gold-divider__line"></div>
+        <span class="gold-divider__ornament">❖</span>
+        <div class="gold-divider__line"></div>
+      </div>
+    </div>
+
+    <div class="faq__list reveal">
+      {faqItems.map((item, i) => (
+        <details class="faq__item" id={`faq-item-${i + 1}`}>
+          <summary class="faq__question">
+            <span class="faq__question-text">{item.question}</span>
+            <span class="faq__icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
+          </summary>
+          <div class="faq__answer">
+            <p>{item.answer}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    background: var(--cream-100);
+    padding: var(--space-3xl) 0;
+  }
+
+  .faq__list {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .faq__item {
+    background: var(--white);
+    border: 1px solid var(--cream-300);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all var(--transition-base);
+  }
+
+  .faq__item:hover {
+    border-color: var(--gold-500);
+    box-shadow: var(--shadow-gold);
+  }
+
+  .faq__item[open] {
+    border-color: var(--gold-500);
+  }
+
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-xl);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__question-text {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--burgundy-900);
+    line-height: 1.4;
+  }
+
+  .faq__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--cream-200);
+    color: var(--burgundy-700);
+    transition: all var(--transition-base);
+  }
+
+  .faq__item[open] .faq__icon {
+    background: var(--burgundy-700);
+    color: var(--gold-400);
+    transform: rotate(180deg);
+  }
+
+  .faq__answer {
+    padding: 0 var(--space-xl) var(--space-lg);
+  }
+
+  .faq__answer p {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    color: var(--brown-700);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 640px) {
+    .faq__question {
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    .faq__question-text {
+      font-size: 0.9375rem;
+    }
+
+    .faq__answer {
+      padding: 0 var(--space-lg) var(--space-md);
+    }
+
+    .faq__answer p {
+      font-size: 0.875rem;
+    }
+  }
+</style>

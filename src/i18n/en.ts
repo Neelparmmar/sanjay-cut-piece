@@ -57,14 +57,14 @@ export const en: Translations = {
   },
   collectionsSection: {
     label: 'Explore Our Range',
-    title: 'Our Collections',
+    title: 'Blouse Pieces, Dress Material & More in Thane',
     subtitle: 'From cotton fabrics and dress materials to readymade blouses and dupattas, explore our wide range of quality textiles and ladies fabrics at our cut piece shop in Jambli Naka, Thane.',
     exploreCollection: 'Explore Collection',
     visitNote: 'Visit our store to explore the complete collection in person.',
   },
   featured: {
     label: 'Featured',
-    title: 'Fabrics for All Your Creations',
+    title: 'Cotton, Silk & Designer Fabrics in Thane',
     description: 'Explore our curated selection of silk, cotton, brocade, georgette, and many more fabrics in a spectrum of colours and patterns — perfect for your next creation.',
   },
   whyUs: {
@@ -111,17 +111,17 @@ export const en: Translations = {
   },
   gallery: {
     label: 'Our Store & Products',
-    title: 'Gallery',
+    title: 'Our Fabrics & Store Gallery',
     subtitle: 'A glimpse of our fabric collections and store experience.',
     alts: {
-      hero: 'Premium silk fabrics at Sanjay Cut Piece, Thane',
-      dress: 'Dress material collection at Sanjay Cut Piece',
-      readymade: 'Ready made blouse collection at Sanjay Cut Piece',
-      dupattas: 'Dupatta collection at Sanjay Cut Piece, Thane',
-      blouse: 'Blouse materials at Sanjay Cut Piece',
-      matching: 'Matching material sets at Sanjay Cut Piece',
-      fabrics: 'Wide range of fabrics at Sanjay Cut Piece, Thane',
-      cutpieces: 'Cut piece fabric collection at Sanjay Cut Piece',
+      hero: 'Premium silk fabrics and dress material at Sanjay Cut Piece, Thane West',
+      dress: 'Ladies dress material and suit fabric collection at Sanjay Cut Piece, Jambli Naka Thane',
+      readymade: 'Readymade blouse and blouse pieces at Sanjay Cut Piece, Thane West',
+      dupattas: 'Dupatta collection — Banarasi, silk and chiffon dupattas at Sanjay Cut Piece, Jambli Naka Thane',
+      blouse: 'Blouse material and matching fabric at Sanjay Cut Piece, Thane West',
+      matching: 'Saree matching fabric and coordinated sets at Sanjay Cut Piece matching centre, Thane',
+      fabrics: 'Cotton, silk and designer fabrics at Sanjay Cut Piece fabric shop, Jambli Naka Thane',
+      cutpieces: 'Cut piece fabric and leggings collection at Sanjay Cut Piece, Thane West',
     },
   },
   reviews: {
@@ -250,5 +250,32 @@ export const en: Translations = {
       description: 'Blouse matching fabric, matching cloth & coordinated fabric sets — at your matching centre in Jambli Naka, Thane.',
       alt: 'Matching material and matching fabric sets at Sanjay Cut Piece matching centre, Thane',
     },
+  },
+  whatWeOffer: {
+    label: 'What We Offer',
+    title: 'Dupatta, Leggings & Saree Matching Centre in Thane',
+    description: 'At Sanjay Cut Piece, Thane\'s trusted fabric store near Jambli Naka since 1977, we offer a wide range of blouse pieces, cotton and silk dress materials, dupattas, saree matching fabric, leggings, saree petticoats and saree shapewear. Whether you\'re looking for ready matching blouse pieces in Thane West, quality dress material for daily wear, designer dupattas for festive occasions, or comfortable cotton leggings in Thane, our collection has something for every need. As a dedicated cut piece centre and matching centre in Thane, we specialise in perfectly coordinated fabric sets — from blouse matching fabric to complete suit material combinations. Visit our shop near Jambli Naka, Thane West, and explore one of the widest fabric selections in the area.',
+  },
+  faq: {
+    label: 'Frequently Asked Questions',
+    title: 'Common Questions About Our Fabric Store in Thane',
+    items: [
+      {
+        question: 'Where can I buy leggings in Thane?',
+        answer: 'Sanjay Cut Piece near Jambli Naka, Thane West offers a wide range of cotton leggings in 50+ colours including ankle-length, churidar, and 4-way stretch styles. Along with leggings, you can also browse our blouse pieces, dupattas, dress materials and saree matching fabric — all under one roof. We are open daily from 9:30 AM to 9:30 PM.',
+      },
+      {
+        question: 'Which is the best dupatta shop near Jambli Naka, Thane?',
+        answer: 'Sanjay Cut Piece at Station Road, Jambli Naka, Thane West has been a trusted dupatta and fabric shop since 1977. We carry Banarasi silk, Bandhani, chiffon, georgette, organza, Kalamkari and net dupattas. Our matching centre also helps you find the perfect dupatta to coordinate with your dress material or saree.',
+      },
+      {
+        question: 'Where can I find blouse pieces and dress material in Thane West?',
+        answer: 'Sanjay Cut Piece is one of the leading blouse material and dress material shops in Thane West. We stock cotton, silk, brocade, georgette, chanderi and printed fabrics for blouse pieces and ladies dress materials. Our expert staff helps with perfect colour matching for sarees, suits and blouses. Visit us near Jambli Naka.',
+      },
+      {
+        question: 'Is there a saree matching centre near Jambli Naka?',
+        answer: 'Yes! Sanjay Cut Piece at Jambli Naka is Thane\'s trusted matching centre since 1977. We offer expert blouse matching fabric, coordinated dupatta sets, matching dress material, and suit fabric combinations. Whether you need matching blouse cloth for a wedding saree or everyday wear, our staff provides personalised colour-matching guidance.',
+      },
+    ],
   },
 };
