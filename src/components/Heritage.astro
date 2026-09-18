@@ -162,15 +162,17 @@ const milestones = t.heritage.milestones;
 
     .heritage__timeline {
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       gap: var(--space-xl);
-      max-width: 300px;
+      max-width: 400px;
+      width: 100%;
+      margin: 0 auto;
     }
 
     .heritage__timeline::before {
       top: 0;
       bottom: 0;
-      left: 20px;
+      left: 19px;
       right: auto;
       width: 2px;
       height: auto;
@@ -178,15 +180,20 @@ const milestones = t.heritage.milestones;
     }
 
     .heritage__milestone {
+      width: 100%;
       padding-top: 0;
-      padding-left: var(--space-3xl);
+      padding-left: 44px;
       text-align: left;
     }
 
     .heritage__milestone-dot {
-      top: 50%;
-      left: 13px;
-      transform: translateY(-50%);
+      top: 5px;
+      left: 12px;
+      transform: none;
+    }
+
+    .heritage__milestone-year {
+      margin-top: -5px;
     }
   }
 </style>
