@@ -62,104 +62,115 @@ const labels = i18nTexts[lang] || i18nTexts.en;
       </div>
     </div>
 
-    <!-- Reviews Wrapper: Statically Rendered -->
+    <!-- Elfsight Google Reviews Platform Script -->
+    <script is:inline src="https://elfsightcdn.com/platform.js" async id="elfsight-script"></script>
+
+    <!-- Reviews Wrapper -->
     <div class="reviews__wrapper reveal">
-      <div id="reviews-active" class="reviews__active">
-        <!-- Header Bar with Google Summary -->
-        <div class="reviews__summary-bar">
-          <div class="reviews__summary-left">
-            <div class="reviews__google-logo" title="Google Reviews">
-              <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
-                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
-                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
-                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-              </svg>
-            </div>
-            <div class="reviews__summary-rating">
-              <span id="reviews-avg-rating" class="reviews__avg-score">4.8</span>
-              <div class="reviews__stars reviews__stars--gold" aria-label="4.8 stars out of 5">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+      <!-- Live Elfsight Google Reviews Container (Shown by default) -->
+      <div id="elfsight-reviews">
+        <div class="elfsight-app-9978739c-91d4-4041-b975-a0db16108ca8" data-elfsight-app-lazy></div>
+      </div>
+
+      <!-- Static Fallback Reviews Container (Hidden by default) -->
+      <div id="fallback-reviews" style="display: none;">
+        <div id="reviews-active" class="reviews__active">
+          <!-- Header Bar with Google Summary -->
+          <div class="reviews__summary-bar">
+            <div class="reviews__summary-left">
+              <div class="reviews__google-logo" title="Google Reviews">
+                <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/>
+                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                </svg>
               </div>
-              <span id="reviews-summary-text" class="reviews__summary-caption">{labels.basedOn}</span>
+              <div class="reviews__summary-rating">
+                <span id="reviews-avg-rating" class="reviews__avg-score">4.8</span>
+                <div class="reviews__stars reviews__stars--gold" aria-label="4.8 stars out of 5">
+                  <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                </div>
+                <span id="reviews-summary-text" class="reviews__summary-caption">{labels.basedOn}</span>
+              </div>
+            </div>
+
+            <div class="reviews__summary-right">
+              <div class="reviews__verified-pill" title={labels.verified}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+                <span>{labels.verified}</span>
+              </div>
             </div>
           </div>
 
-          <div class="reviews__summary-right">
-            <div class="reviews__verified-pill" title={labels.verified}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-              <span>{labels.verified}</span>
-            </div>
+          <!-- The 5 Review Cards Grid (Statically Rendered) -->
+          <div id="reviews-grid" class="reviews__grid" aria-live="polite">
+            {initialReviews.map((review, idx) => (
+              <article class={`reviews__card reviews__card--item-${idx + 1} reveal-item`}>
+                <div class="reviews__card-header">
+                  <div class="reviews__avatar">
+                    <img
+                      src={review.profilePhotoUrl}
+                      alt={review.authorName}
+                      class="reviews__avatar-img"
+                      loading="lazy"
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="reviews__avatar-initials" style="display:none;">
+                      {review.authorName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                  </div>
+                  <div class="reviews__card-author-info">
+                    <h3 class="reviews__author-name">{review.authorName}</h3>
+                    <div class="reviews__card-meta">
+                      <span class="reviews__verified-badge" title={labels.verified}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <span>{labels.verified}</span>
+                      </span>
+                      <span class="reviews__date">• {review.relativeTimeDescription}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="reviews__card-stars" aria-label={`${review.rating} out of 5 stars`}>
+                  <span class="star-filled">★</span>
+                  <span class="star-filled">★</span>
+                  <span class="star-filled">★</span>
+                  <span class="star-filled">★</span>
+                  <span class="star-filled">★</span>
+                </div>
+                <div class="reviews__card-body">
+                  <p class="reviews__card-text">{review.text}</p>
+                </div>
+              </article>
+            ))}
           </div>
-        </div>
 
-        <!-- The 5 Review Cards Grid (Statically Rendered) -->
-        <div id="reviews-grid" class="reviews__grid" aria-live="polite">
-          {initialReviews.map((review, idx) => (
-            <article class={`reviews__card reviews__card--item-${idx + 1} reveal-item`}>
-              <div class="reviews__card-header">
-                <div class="reviews__avatar">
-                  <img
-                    src={review.profilePhotoUrl}
-                    alt={review.authorName}
-                    class="reviews__avatar-img"
-                    loading="lazy"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                  />
-                  <div class="reviews__avatar-initials" style="display:none;">
-                    {review.authorName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
-                  </div>
-                </div>
-                <div class="reviews__card-author-info">
-                  <h3 class="reviews__author-name">{review.authorName}</h3>
-                  <div class="reviews__card-meta">
-                    <span class="reviews__verified-badge" title={labels.verified}>
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="#4285F4" aria-hidden="true">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                      </svg>
-                      <span>{labels.verified}</span>
-                    </span>
-                    <span class="reviews__date">• {review.relativeTimeDescription}</span>
-                  </div>
-                </div>
-              </div>
-              <div class="reviews__card-stars" aria-label={`${review.rating} out of 5 stars`}>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-                <span class="star-filled">★</span>
-              </div>
-              <div class="reviews__card-body">
-                <p class="reviews__card-text">{review.text}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <!-- Footer Navigation & Actions -->
-        <div class="reviews__footer">
-          <div class="reviews__actions">
-            <a
-              id="reviews-view-all"
-              href={viewReviewsLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn--secondary btn--sm"
-            >
-              {t.reviews.btnText}
-            </a>
-            <a
-              id="reviews-write"
-              href={writeReviewLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn btn--primary btn--sm"
-            >
-              {labels.writeReview}
-            </a>
+          <!-- Footer Navigation & Actions -->
+          <div class="reviews__footer">
+            <div class="reviews__actions">
+              <a
+                id="reviews-view-all"
+                href={viewReviewsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--secondary btn--sm"
+              >
+                {t.reviews.btnText}
+              </a>
+              <a
+                id="reviews-write"
+                href={writeReviewLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn btn--primary btn--sm"
+              >
+                {labels.writeReview}
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -167,8 +178,59 @@ const labels = i18nTexts[lang] || i18nTexts.en;
   </div>
 </section>
 
-<!-- Client Hydration & Live Sync (Optional Fallback Enhancement) -->
+<!-- Client Hydration & Live Sync / Fallback Logic -->
 <script is:inline define:vars={{ labels, initialReviews }}>
+  (function initReviewsWithFallback() {
+    try {
+      const elfsightContainer = document.getElementById('elfsight-reviews');
+      const fallbackContainer = document.getElementById('fallback-reviews');
+      const elfsightScript = document.getElementById('elfsight-script');
+
+      if (!elfsightContainer || !fallbackContainer) return;
+
+      let hasFallenBack = false;
+
+      function showFallback() {
+        if (hasFallenBack) return;
+        hasFallenBack = true;
+        elfsightContainer.style.display = 'none';
+        fallbackContainer.style.display = 'block';
+      }
+
+      // Attach script error listener (ad blocker, network issue, blocked domain)
+      if (elfsightScript) {
+        elfsightScript.addEventListener('error', showFallback);
+      }
+
+      // Wait 4.5 seconds to verify if Elfsight actually rendered content inside container
+      setTimeout(function () {
+        try {
+          if (hasFallenBack) return;
+
+          const widgetApp = elfsightContainer.querySelector('[class*="elfsight-app-"]');
+          const hasChildren = (widgetApp && widgetApp.children.length > 0) || elfsightContainer.children.length > 1;
+          const isAppLoaded = typeof window.elfsightAppsData !== 'undefined' || typeof window.eapps !== 'undefined' || hasChildren;
+
+          if (!isAppLoaded) {
+            showFallback();
+          }
+        } catch (e) {
+          showFallback();
+        }
+      }, 4500);
+
+    } catch (err) {
+      try {
+        const elfsightContainer = document.getElementById('elfsight-reviews');
+        const fallbackContainer = document.getElementById('fallback-reviews');
+        if (elfsightContainer && fallbackContainer) {
+          elfsightContainer.style.display = 'none';
+          fallbackContainer.style.display = 'block';
+        }
+      } catch (e) {}
+    }
+  })();
+
   (function syncReviews() {
     const avgRatingEl = document.getElementById('reviews-avg-rating');
 
@@ -180,7 +242,6 @@ const labels = i18nTexts[lang] || i18nTexts.en;
         }
       })
       .catch(err => {
-        // Silently preserve the 5 statically rendered reviews
         console.debug('Using pre-rendered static reviews:', err);
       });
   })();
