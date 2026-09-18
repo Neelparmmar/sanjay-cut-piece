@@ -1238,7 +1238,8 @@ import business from '../data/business.json';
         } else if (item.action === 'changeLang') {
           renderQuickReplies('langSelect', true);
         } else {
-          handleUserMessage(item.message);
+          // Pass fromQuickReply=true so these don't get forwarded to WhatsApp
+          handleUserMessage(item.message, true);
         }
       });
       wrap.appendChild(btn);
@@ -1304,17 +1305,44 @@ import business from '../data/business.json';
     const langData = LANG_DATA[currentLang];
     const lower = input.toLowerCase().trim();
 
+    // Word-boundary aware keyword matching
+    // Uses \b for Latin/English keywords, falls back to .includes() for non-Latin (Hindi/Marathi)
+    function matchesKeyword(text, keyword) {
+      const isLatin = /^[a-z0-9\s\-']+$/i.test(keyword);
+      if (isLatin) {
+        // Escape special regex chars in the keyword, then wrap with word boundaries
+        const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return new RegExp('\\b' + escaped + '\\b', 'i').test(text);
+      }
+      // For non-Latin scripts (Hindi, Marathi), use substring match
+      return text.includes(keyword);
+    }
+
     for (const rule of langData.faq) {
       for (const kw of rule.keywords) {
-        if (lower.includes(kw)) {
-          return { action: 'reply', response: rule.response, followUp: rule.followUp };
+        if (matchesKeyword(lower, kw)) {
+          // If the bot's response directs customer to WhatsApp (has pre-filled ?text=),
+          // it's a real inquiry (product, pricing, order) that needs human attention
+          const isInquiry = rule.response.includes('?text=');
+          return { action: 'reply', response: rule.response, followUp: rule.followUp, isInquiry };
         }
       }
     }
-    return { action: 'reply', response: langData.defaultResponse, followUp: 'main' };
+    // No keyword matched → genuine unknown query → flag it for WhatsApp forwarding
+    return { action: 'reply', response: langData.defaultResponse, followUp: 'main', isUnknown: true };
   }
 
-  function handleUserMessage(text) {
+  // ---- Forward typed customer messages to WhatsApp ----
+  function forwardToWhatsApp(userText) {
+    // Build a clean pre-filled WhatsApp message
+    const greeting = currentLang === 'hi' ? 'नमस्ते' : currentLang === 'mr' ? 'नमस्कार' : 'Hello';
+    const encoded = encodeURIComponent(`${greeting}, I have a query: ${userText}`);
+    const url = `${WHATSAPP_LINK}?text=${encoded}`;
+    // Open in new tab with a slight delay so the bot reply renders first
+    setTimeout(() => window.open(url, '_blank', 'noopener'), 1500);
+  }
+
+  function handleUserMessage(text, fromQuickReply = false) {
     if (!text.trim()) return;
     addMessage(text, 'user');
     // Remove old inline quick replies
@@ -1328,18 +1356,27 @@ import business from '../data/business.json';
       selectLanguage(result.lang);
     } else {
       showTypingThenReply(result.response, result.followUp);
+
+      // 🔁 Forward to WhatsApp when it's a real customer inquiry or unknown query
+      // isUnknown = bot has no answer at all
+      // isInquiry = bot answered but directed customer to WhatsApp (product/pricing/order queries)
+      if (result.isUnknown || result.isInquiry) {
+        forwardToWhatsApp(text);
+      }
     }
   }
 
   // ---- Input Events ----
   sendBtn.addEventListener('click', () => {
-    handleUserMessage(inputEl.value);
+    // fromQuickReply=false → typed by user → will be forwarded to WhatsApp
+    handleUserMessage(inputEl.value, false);
   });
 
   inputEl.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      handleUserMessage(inputEl.value);
+      // fromQuickReply=false → typed by user → will be forwarded to WhatsApp
+      handleUserMessage(inputEl.value, false);
     }
   });
 
